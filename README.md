@@ -1,32 +1,8 @@
 <img src="./.assets/christmas_ferris.png" width="164">
 
-# 🎄 Advent of Code {year}
+# 🎄 Advent of Code 2022
 
 Solutions for [Advent of Code](https://adventofcode.com/) in [Rust](https://www.rust-lang.org/).
-
-<!--- advent_readme_stars table --->
-
----
-
-## Template setup
-
-This template supports all major OS (macOS, Linux, Windows).
-
-### Create your repository 📝
-
-1.  Open [the template repository](https://github.com/fspoettel/advent-of-code-rust) on Github.
-2.  Click [Use this template](https://github.com/fspoettel/advent-of-code-rust/generate) and create your repository.
-3.  Clone your repository to your computer.
-
-### Setup rust 💻
-
-1.  Install the [Rust toolchain](https://www.rust-lang.org/tools/install).
-2.  (recommended) Install the [rust-analyzer](https://rust-analyzer.github.io/manual.html) extension for your code editor.
-3.  (optional) Install a native debugger. If you are using VS Code, [CodeLLDB](https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb) is a good option.
-
----
-
-✨ You can start solving puzzles now! Head to the [Usage section](#usage) to see how to use this template. If you like, you can configure [some optional features](#optional-template-features).
 
 ## Usage
 
@@ -49,29 +25,6 @@ Individual solutions live in the `./src/bin/` directory as separate binaries.
 Every [solution](https://github.com/fspoettel/advent-of-code-rust/blob/main/src/bin/scaffold.rs#L11-L41) has _unit tests_ referencing its _example_ file. Use these unit tests to develop and debug your solution against the example input. For some puzzles, it might be easier to forgo the example file and hardcode inputs into the tests.
 
 When editing a solution, `rust-analyzer` will display buttons for running / debugging unit tests above the unit test blocks.
-
-### Download input for a day
-
-> **Note**  
-> This command requires [installing the aoc-cli crate](#download-puzzle-inputs-via-aoc-cli).
-
-```sh
-# example: `cargo download 1`
-cargo download <day>
-
-# output:
-# Downloading input with aoc-cli...
-# Loaded session cookie from "/home/felix/.adventofcode.session".
-# Downloading input for day 1, 2021...
-# Saving puzzle input to "/tmp/tmp.MBdcAdL9Iw/input"...
-# Done!
-# ---
-# 🎄 Successfully wrote input to "src/inputs/01.txt"!
-```
-
-To download inputs for previous years, append the `--year/-y` flag. _(example: `cargo download 1 --year 2020`)_
-
-Puzzle inputs are not checked into git. [Reasoning](https://old.reddit.com/r/adventofcode/comments/k99rod/sharing_input_data_were_we_requested_not_to/gf2ukkf/?context=3).
 
 ### Run solutions for a day
 
@@ -141,37 +94,9 @@ cargo clippy
 
 ## Optional template features
 
-### Download puzzle inputs via aoc-cli
-
-1. Install [`aoc-cli`](https://github.com/scarvalhojr/aoc-cli/) via cargo: `cargo install aoc-cli --version 0.5.0`.
-2. Create an `.adventofcode.session` file in your home directory and paste your session cookie[^1] into it. To get this, press F12 anywhere on the Advent of Code website to open your browser developer tools. Look in your Cookies under the Application or Storage tab, and copy out the `session` cookie value.
-
-Once installed, you can use the [download command](#download-input-for-a-day).
-
 ### Enable clippy lints in CI
 
 Uncomment the `clippy` job in the `ci.yml` workflow to enable clippy checks in CI.
-
-### Automatically track ⭐️ progress in the readme
-
-This template includes [a Github action](https://github.com/k2bd/advent-readme-stars) that automatically updates the readme with your advent of code progress.
-
-To enable it, complete the following steps:
-
-#### 1. Create a private leaderboard
-
-Go to the leaderboard page of the year you want to track and click _Private Leaderboard_. If you have not created a leaderboard yet, create one by clicking _Create It_. Your leaderboard should be accessible under `https://adventofcode.com/{year}/leaderboard/private/view/{aoc_user_id}`.
-
-#### 2. Set repository secrets
-
-Go to the _Secrets_ tab in your repository settings and create the following secrets:
-
--   `AOC_ENABLED`: This variable controls whether the workflow is enabled. Set it to `true` to enable the progress tracker.
--   `AOC_USER_ID`: Go to [this page](https://adventofcode.com/settings) and copy your user id. It's the number behind the `#` symbol in the first name option. Example: `3031`
--   `AOC_YEAR`: the year you want to track. Example: `2021`
--   `AOC_SESSION`: an active session[^2] for the advent of code website. To get this, press F12 anywhere on the Advent of Code website to open your browser developer tools. Look in your Cookies under the Application or Storage tab, and copy out the `session` cookie.
-
-✨ You can now run this action manually via the _Run workflow_ button on the workflow page. If you want the workflow to run automatically, uncomment the `schedule` section in the `readme-stars.yml` workflow file or add a `push` trigger.
 
 ### Use VS Code to debug your code
 
