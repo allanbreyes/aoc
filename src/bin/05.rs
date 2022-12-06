@@ -26,7 +26,7 @@ impl fmt::Display for Move {
 }
 
 // Apply series of moves to the stacks of crates
-fn apply(moves: &[Move], stacks: &mut Vec<Vec<char>>, reverse: bool) {
+fn apply(moves: &[Move], stacks: &mut [Vec<char>], reverse: bool) {
     for m in moves {
         let from = &mut stacks[m.from as usize];
         let crates = from.split_off(from.len() - m.count);
@@ -39,7 +39,7 @@ fn apply(moves: &[Move], stacks: &mut Vec<Vec<char>>, reverse: bool) {
 }
 
 // Grab the top values from the stacks
-fn pluck(stacks: &mut Vec<Vec<char>>) -> String {
+fn pluck(stacks: &mut [Vec<char>]) -> String {
     stacks.iter().map(|s| s.last().copied()).map(|c| c.unwrap()).collect()
 }
 
