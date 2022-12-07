@@ -1,0 +1,203 @@
+// Half-baked implementation using data structures. I got hung up on borrowing
+// values and linking Nodes to parents. I'm keeping this here for posterity, and
+// to re-visit if or when I get better at Rust!
+
+use std::collections::HashMap;
+
+pub fn part_one(input: &str) -> Option<u32> {
+    let mut root = Node::new("/", NodeKind::Directory, None);
+    let mut cur: &Node = &root;
+    for command in parse(&input) {
+        match command.program {
+            Program::CD => {
+                match command.arg {
+                    Some("/") => {
+                        cur = &root;
+                    },
+                    Some("..") => {
+                        if cur.name == "/" {
+                            // This should just be a no-op, but let's treat this
+                            // as exceptional for the purposes of the prompt
+                            panic!("cannot cd out of root");
+                        }
+                    },
+                    Some(&_) => {
+                        // NOTE: "blind" cd without a prior ls is not supported
+
+
+                    },
+                    None => {
+                        // Bare cd is supposed to take you to $HOME, but for the
+                        // prompt, it is undefined behavior
+                        panic!("undefined behavior");
+                    },
+                }
+            }
+            Program::LS => {
+                for mut node in command.output {
+                    node.add_parent(cur);
+                    cur.add_child(node);
+                }
+            }
+        }
+    }
+    None
+}
+
+pub fn part_two(input: &str) -> Option<u32> {
+    None
+}
+
+#[derive(Debug, PartialEq)]
+enum NodeKind {
+    File,
+    Directory,
+}
+
+#[derive(Debug)]
+struct Node {
+    name: String,
+    kind: NodeKind,
+    size: Option<u32>,
+    parent: Option<Box<Node>>,
+    children: HashMap<String, Node>,
+}
+
+impl Node {
+    fn new(name: &str, kind: NodeKind, size: Option<u32>) -> Self {
+        Self {
+            name: name.to_string(),
+            kind,
+            size,
+            parent: None,
+            children: HashMap::new(),
+        }
+    }
+
+    fn add_child(&mut self, child: Node) {
+        self.children.insert(child.name.clone(), child);
+    }
+
+    fn add_parent(&mut self, parent: Node) {
+        self.parent = Some(Box::new(parent));
+    }
+
+    fn size(&self) -> u32 {
+        self.size.unwrap_or(0) + self.children.values().map(|c| c.size()).sum::<u32>()
+    }
+}
+
+#[derive(Debug, PartialEq)]
+enum Program {
+    CD,
+    LS,
+}
+
+#[derive(Debug)]
+struct Command<'a> {
+    program: Program,
+    arg: Option<&'a str>,
+    output: Vec<Node>,
+}
+
+fn parse(input: &str) -> Vec<Command> {
+    let mut commands = Vec::new();
+    let lines: Vec<&str> = input.lines().collect();
+
+    let mut i = 0;
+    while i < lines.len() {
+        let line = lines[i];
+        if line.starts_with("$") {
+            let parts = &line.split_whitespace().collect::<Vec<_>>()[1..];
+            let mut command = Command {
+                program: match parts[0] {
+                    "cd" => Program::CD,
+                    "ls" => Program::LS,
+                    _ => panic!("unknown program: {}", parts[0]),
+                },
+                arg: if parts.len() > 1 {
+                    Some(parts[1])
+                } else {
+                    None
+                },
+                output: Vec::new(),
+            };
+
+            if command.program == Program::LS {
+                i += 1; // Lookahead by one
+                let mut buffer = String::new();
+                while i < lines.len() && !lines[i].is_empty() && !lines[i].starts_with("$") {
+                    buffer += format!("{}\n", lines[i]).as_str();
+                    i += 1;
+                }
+                let output = parse_ls_output(&buffer);
+                command.output.extend(output);
+                i -= 1; // Backtrack by one
+            }
+            commands.push(command);
+        } else {
+            panic!("invalid input: {}", line);
+        }
+
+        i += 1;
+    }
+    
+    
+    commands
+}
+
+fn parse_ls_output(input: &str) -> Vec<Node> {
+    input.trim().split('\n').map(|line| {
+        let (leader, name) = line.split_once(' ').unwrap();
+        match leader {
+            "dir" => Node::new(name, NodeKind::Directory, None),
+            _ => Node::new(name, NodeKind::File, Some(leader.parse().unwrap())),
+        }
+    }).collect()
+}
+
+fn main() {
+    let input = &advent_of_code::read_file("inputs", 7);
+    advent_of_code::solve!(1, part_one, input);
+    advent_of_code::solve!(2, part_two, input);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_part_one() {
+        let input = advent_of_code::read_file("examples", 7);
+        assert_eq!(part_one(&input), Some(95437));
+    }
+
+    #[test]
+    fn test_part_two() {
+        let input = advent_of_code::read_file("examples", 7);
+        assert_eq!(part_two(&input), None);
+    }
+
+    #[test]
+    fn test_parse() {
+        let input = advent_of_code::read_file("examples", 7);
+        let commands = parse(&input);
+        assert_eq!(commands.len(), 10);
+    }
+
+    #[test]
+    fn test_parse_ls_output() {
+        let input = "dir a\n14848514 b.txt\n8504156 c.dat";
+        let nodes = parse_ls_output(input);
+        assert_eq!(nodes.len(), 3);
+        assert_eq!(nodes[0].name, "a");
+        assert_eq!(nodes[0].kind, NodeKind::Directory);
+        assert_eq!(nodes[0].size, None);
+        assert_eq!(nodes[1].name, "b.txt");
+        assert_eq!(nodes[1].kind, NodeKind::File);
+        assert_eq!(nodes[1].size, Some(14848514));
+        assert_eq!(nodes[2].name, "c.dat");
+        assert_eq!(nodes[2].kind, NodeKind::File);
+        assert_eq!(nodes[2].size, Some(8504156));
+    }
+}
