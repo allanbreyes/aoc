@@ -23,7 +23,7 @@ pub fn part_two(input: &str) -> Option<u32> {
     forest.into_iter().flatten().max_by_key(|tree| tree.score).map(|tree| tree.score)
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug)]
 struct Tree {
     height: u32,
     visible: bool,
@@ -72,7 +72,7 @@ fn get_shape(forest: &Forest) -> (usize, usize) {
         return (0, 0);
     } 
     let num_rows = forest.len();
-    let num_cols = if forest[0].len() > 0 {
+    let num_cols = if !forest[0].is_empty() {
         forest[0].len()
     } else {
         0
@@ -98,7 +98,7 @@ fn score(forest: &Forest, position: Position) -> u32 {
     let height = forest[i][j].height;
     let mut score = 1;
 
-    for (di, dj) in vec![UP, RIGHT, DOWN, LEFT] {
+    for (di, dj) in &[UP, RIGHT, DOWN, LEFT] {
         (i, j) = position;
         let mut count = 0;
 
@@ -150,8 +150,11 @@ fn parse(input: &str) -> Forest {
     for line in input.lines() {
         let mut row = Vec::new();
         for char in line.chars() {
-            let mut tree = Tree::default();
-            tree.height = char.to_digit(10).unwrap();
+            let tree = Tree {
+                height: char.to_digit(10).unwrap(),
+                score: 0,
+                visible: false,
+            };
             row.push(tree);
         }
         trees.push(row);
@@ -184,7 +187,7 @@ mod tests {
         assert_eq!(part_one(&input), Some(21));
 
         let small = include_str!("../examples/08-small.txt");
-        assert_eq!(part_one(&small), Some(45));
+        assert_eq!(part_one(small), Some(45));
     }
 
     #[test]
