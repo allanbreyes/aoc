@@ -8,7 +8,9 @@ pub fn part_one(input: &str) -> Option<u32> {
     for (position, direction) in get_vectors(&forest) {
         survey(&mut forest, position, direction);
     }
-    pretty_print(&forest);
+    if forest.len() < 10 {
+        pretty_print(&forest);
+    }
     Some(count_visible(&forest))
 }
 
