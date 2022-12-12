@@ -2,7 +2,7 @@ use pathfinding::prelude::dijkstra;
 
 pub fn part_one(input: &str) -> Option<usize> {
     let (grid, start) = parse(input);
-    let result = dijkstra(&start, |node| successors(node, &grid), |node| success(node));
+    let result = dijkstra(&start, |node| successors(node, &grid), success);
     let (_, cost) = result.unwrap();
     Some(cost)
 }
@@ -22,15 +22,10 @@ pub fn part_two(input: &str) -> Option<u32> {
     // NOTE: this isn't cached at all, so it's super slow
     let result = starts
         .iter()
-        .map(|start| {
-            let result = dijkstra(&start.clone(), |node| successors(node, &grid), |node| success(node));
-            match result {
-                Some((_, cost)) => Some(cost),
-                None => None,
-            }
+        .filter_map(|start| {
+            dijkstra(&start.clone(), |node| successors(node, &grid), success)
         })
-        .filter(|cost| cost.is_some())
-        .map(|cost| cost.unwrap())
+        .map(|(_, cost)| cost)
         .min();
     Some(result.unwrap() as u32)
 }
@@ -84,10 +79,7 @@ fn shape(grid: &Grid) -> (usize, usize) {
 }
 
 fn success(node: &Node) -> bool {
-    match node {
-        Node::End(_, _, _) => true,
-        _ => false,
-    }
+    matches!(node, Node::End(_, _, _))
 }
 
 fn successors(node: &Node, grid: &Grid) -> Vec<(Node, usize)> {
