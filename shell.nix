@@ -1,16 +1,17 @@
 { pkgs ? import <nixpkgs> {} }:
 
 let 
+  # TODO: revert back to stable once 1.65.0 is merged
   unstable = import <nixos-unstable> {};
 in pkgs.mkShell {
   nativeBuildInputs = with pkgs; [
     cargo
     gcc
-    unstable.rustc # TODO: revert back to stable once 1.65.0 is merged
+    unstable.rustc
   ];
   buildInputs = with pkgs; [
     cargo-watch
-    clippy
+    unstable.clippy
     rust-analyzer
     rustfmt
   ];
