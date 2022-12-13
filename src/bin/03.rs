@@ -1,36 +1,40 @@
 use std::collections::HashSet;
 
 pub fn part_one(input: &str) -> Option<u32> {
-    parse_input_one(input).iter().map(|(left, right)| {
-        let common = find_common(left, right);
-        if common.len() != 1 {
-            println!("{} + {}", left, right);
-            for c in common {
-                print!("{}", c);
+    parse_input_one(input)
+        .iter()
+        .map(|(left, right)| {
+            let common = find_common(left, right);
+            if common.len() != 1 {
+                println!("{} + {}", left, right);
+                for c in common {
+                    print!("{}", c);
+                }
+                panic!("found more than one common character");
             }
-            panic!("found more than one common character");
-        }
-        let char = common[0];
-        get_priority(char)
-    })
-    .reduce(|a, b| a + b)
+            let char = common[0];
+            get_priority(char)
+        })
+        .reduce(|a, b| a + b)
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    parse_input_two(input).iter().map(|group| {
-        let common = group.iter().fold(HashSet::new(), |acc, s| {
-            if acc.is_empty() {
-                s.chars().collect()
-            } else {
-                acc.intersection(&s.chars().collect()).cloned().collect()
+    parse_input_two(input)
+        .iter()
+        .map(|group| {
+            let common = group.iter().fold(HashSet::new(), |acc, s| {
+                if acc.is_empty() {
+                    s.chars().collect()
+                } else {
+                    acc.intersection(&s.chars().collect()).cloned().collect()
+                }
+            });
+            if common.len() != 1 {
+                panic!("found more than one common character");
             }
-        });
-        if common.len() != 1 {
-            panic!("found more than one common character");
-        }
-        get_priority(common.into_iter().next().unwrap())
-    })
-    .reduce(|a, b| a + b)
+            get_priority(common.into_iter().next().unwrap())
+        })
+        .reduce(|a, b| a + b)
 }
 
 fn main() {
@@ -40,14 +44,17 @@ fn main() {
 }
 
 fn parse_input_one(input: &str) -> Vec<(&str, &str)> {
-    input.trim().lines().map(|line| {
-        if line.len() % 2 != 0 {
-            panic!("Invalid input");
-        }
+    input
+        .trim()
+        .lines()
+        .map(|line| {
+            if line.len() % 2 != 0 {
+                panic!("Invalid input");
+            }
 
-        line.split_at(line.len() / 2)
-    })
-    .collect()
+            line.split_at(line.len() / 2)
+        })
+        .collect()
 }
 
 fn parse_input_two(input: &str) -> Vec<Vec<&str>> {

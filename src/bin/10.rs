@@ -19,7 +19,9 @@ struct Register {
 
 impl Register {
     fn new() -> Register {
-        Register { value: Cell::new(1) }
+        Register {
+            value: Cell::new(1),
+        }
     }
 
     fn get(&self) -> i32 {
@@ -87,7 +89,8 @@ fn draw(signal: Vec<i32>) -> String {
 }
 fn fingerprint(signal: Vec<i32>) -> Vec<i32> {
     // Get the signal strength at every 20th cycle
-    signal.iter()
+    signal
+        .iter()
         .enumerate()
         .filter(|&(i, _)| (20..240).contains(&i) && (i - 20) % 40 == 0)
         .map(|(i, &x)| x * i as i32)
@@ -131,13 +134,19 @@ mod tests {
     #[test]
     fn test_part_two() {
         let input = advent_of_code::read_file("examples", 10);
-        assert_eq!(part_two(&input), Some("##..##..##..##..##..##..##..##..##..##..
+        assert_eq!(
+            part_two(&input),
+            Some(
+                "##..##..##..##..##..##..##..##..##..##..
 ###...###...###...###...###...###...###.
 ####....####....####....####....####....
 #####.....#####.....#####.....#####.....
 ######......######......######......####
 #######.......#######.......#######.....
-".to_string()));
+"
+                .to_string()
+            )
+        );
     }
 
     #[test]

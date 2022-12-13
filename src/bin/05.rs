@@ -40,7 +40,11 @@ fn apply(moves: &[Move], stacks: &mut [Vec<char>], reverse: bool) {
 
 // Grab the top values from the stacks
 fn pluck(stacks: &mut [Vec<char>]) -> String {
-    stacks.iter().map(|s| s.last().copied()).map(|c| c.unwrap()).collect()
+    stacks
+        .iter()
+        .map(|s| s.last().copied())
+        .map(|c| c.unwrap())
+        .collect()
 }
 
 fn parse(input: &str) -> (Vec<Vec<char>>, Vec<Move>) {
@@ -51,31 +55,53 @@ fn parse(input: &str) -> (Vec<Vec<char>>, Vec<Move>) {
 
     // Parse levels
     let mut levels = levels_str.lines().rev();
-    let headers = levels.next().unwrap().split_whitespace().map(|n| {
-        n.parse::<u32>().expect("could not parse level number") - 1
-    }).collect::<Vec<u32>>();
+    let headers = levels
+        .next()
+        .unwrap()
+        .split_whitespace()
+        .map(|n| n.parse::<u32>().expect("could not parse level number") - 1)
+        .collect::<Vec<u32>>();
 
     headers.iter().for_each(|_| {
         stacks.push(Vec::new());
     });
 
     for level in levels {
-        level.chars().skip(1).step_by(4).zip(headers.iter()).for_each(|(c, h)| {
-            if c != ' ' {
-                stacks[*h as usize].push(c);
-            }
-        });
+        level
+            .chars()
+            .skip(1)
+            .step_by(4)
+            .zip(headers.iter())
+            .for_each(|(c, h)| {
+                if c != ' ' {
+                    stacks[*h as usize].push(c);
+                }
+            });
     }
-    
+
     // Parse moves: move n from a to b
     for line in moves_str.lines() {
         let mut parts = line.split_whitespace();
         parts.next();
-        let count = parts.next().unwrap().parse().expect("could not parse move count");
+        let count = parts
+            .next()
+            .unwrap()
+            .parse()
+            .expect("could not parse move count");
         parts.next();
-        let from = parts.next().unwrap().parse::<u32>().expect("could not parse move from") - 1;
+        let from = parts
+            .next()
+            .unwrap()
+            .parse::<u32>()
+            .expect("could not parse move from")
+            - 1;
         parts.next();
-        let to = parts.next().unwrap().parse::<u32>().expect("could not parse move to") - 1;
+        let to = parts
+            .next()
+            .unwrap()
+            .parse::<u32>()
+            .expect("could not parse move to")
+            - 1;
         moves.push(Move { from, to, count });
     }
 

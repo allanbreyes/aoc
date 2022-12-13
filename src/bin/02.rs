@@ -52,69 +52,76 @@ impl Result {
 }
 
 fn score_part_one(input: &str) -> Option<u32> {
-    input.trim().split('\n').map(|line| {
-        let plays = line.split(' ').map(|word| {
-            match word {
-                "A" | "X" => Play::Rock,
-                "B" | "Y" => Play::Paper,
-                "C" | "Z" => Play::Scissors,
-                _ => panic!("Invalid input"),
-            }
-        }).collect::<Vec<Play>>();
+    input
+        .trim()
+        .split('\n')
+        .map(|line| {
+            let plays = line
+                .split(' ')
+                .map(|word| match word {
+                    "A" | "X" => Play::Rock,
+                    "B" | "Y" => Play::Paper,
+                    "C" | "Z" => Play::Scissors,
+                    _ => panic!("Invalid input"),
+                })
+                .collect::<Vec<Play>>();
 
-        if plays.len() != 2 {
-            panic!("Invalid input");
-        }
-        let opponent = &plays[0];
-        let player = &plays[1];
-        
-        score(opponent, player)
-    })
-    .reduce(|a, b| a + b)
+            if plays.len() != 2 {
+                panic!("Invalid input");
+            }
+            let opponent = &plays[0];
+            let player = &plays[1];
+
+            score(opponent, player)
+        })
+        .reduce(|a, b| a + b)
 }
 
 fn score_part_two(input: &str) -> Option<u32> {
-    input.trim().split('\n').map(|line| {
-        let parts: Vec<&str> = line.split(' ').collect();
-        if parts.len() != 2 {
-            panic!("Invalid input");
-        }
+    input
+        .trim()
+        .split('\n')
+        .map(|line| {
+            let parts: Vec<&str> = line.split(' ').collect();
+            if parts.len() != 2 {
+                panic!("Invalid input");
+            }
 
-        let opponent = match parts[0] {
-            "A" => Play::Rock,
-            "B" => Play::Paper,
-            "C" => Play::Scissors,
-            _ => panic!("Invalid input"),
-        };
+            let opponent = match parts[0] {
+                "A" => Play::Rock,
+                "B" => Play::Paper,
+                "C" => Play::Scissors,
+                _ => panic!("Invalid input"),
+            };
 
-        let result = match parts[1] {
-            "X" => Result::Loss,
-            "Y" => Result::Draw,
-            "Z" => Result::Win,
-            _ => panic!("Invalid input"),
-        };
+            let result = match parts[1] {
+                "X" => Result::Loss,
+                "Y" => Result::Draw,
+                "Z" => Result::Win,
+                _ => panic!("Invalid input"),
+            };
 
-        let player = match result {
-            Result::Win => match opponent {
-                Play::Rock => Play::Paper,
-                Play::Paper => Play::Scissors,
-                Play::Scissors => Play::Rock,
-            },
-            Result::Draw => match opponent {
-                Play::Rock => Play::Rock,
-                Play::Paper => Play::Paper,
-                Play::Scissors => Play::Scissors,
-            },
-            Result::Loss => match opponent {
-                Play::Rock => Play::Scissors,
-                Play::Paper => Play::Rock,
-                Play::Scissors => Play::Paper,
-            },
-        };
+            let player = match result {
+                Result::Win => match opponent {
+                    Play::Rock => Play::Paper,
+                    Play::Paper => Play::Scissors,
+                    Play::Scissors => Play::Rock,
+                },
+                Result::Draw => match opponent {
+                    Play::Rock => Play::Rock,
+                    Play::Paper => Play::Paper,
+                    Play::Scissors => Play::Scissors,
+                },
+                Result::Loss => match opponent {
+                    Play::Rock => Play::Scissors,
+                    Play::Paper => Play::Rock,
+                    Play::Scissors => Play::Paper,
+                },
+            };
 
-        score(&opponent, &player)
-    })
-    .reduce(|a, b| a + b)
+            score(&opponent, &player)
+        })
+        .reduce(|a, b| a + b)
 }
 
 fn score(opponent: &Play, player: &Play) -> u32 {

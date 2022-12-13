@@ -22,7 +22,11 @@ pub fn part_two(input: &str) -> Option<u32> {
             forest[i][j].score = score(&forest, (i, j));
         }
     }
-    forest.into_iter().flatten().max_by_key(|tree| tree.score).map(|tree| tree.score)
+    forest
+        .into_iter()
+        .flatten()
+        .max_by_key(|tree| tree.score)
+        .map(|tree| tree.score)
 }
 
 #[derive(Debug)]
@@ -52,9 +56,10 @@ const DOWN: Direction = (1, 0);
 const LEFT: Direction = (0, -1);
 
 fn count_visible(forest: &Forest) -> u32 {
-    forest.iter().map(|row| {
-        row.iter().filter(|tree| tree.visible).count() as u32
-    }).sum()
+    forest
+        .iter()
+        .map(|row| row.iter().filter(|tree| tree.visible).count() as u32)
+        .sum()
 }
 
 fn get_corners(forest: &Forest) -> Vec<Position> {
@@ -62,9 +67,9 @@ fn get_corners(forest: &Forest) -> Vec<Position> {
     let mut corners = Vec::new();
     if num_rows > 0 && num_cols > 0 {
         corners.push((0, 0));
-        corners.push((0, num_cols-1));
-        corners.push((num_rows-1, 0));
-        corners.push((num_rows-1, num_cols-1));
+        corners.push((0, num_cols - 1));
+        corners.push((num_rows - 1, 0));
+        corners.push((num_rows - 1, num_cols - 1));
     }
     corners
 }
@@ -72,7 +77,7 @@ fn get_corners(forest: &Forest) -> Vec<Position> {
 fn get_shape(forest: &Forest) -> (usize, usize) {
     if forest.is_empty() {
         return (0, 0);
-    } 
+    }
     let num_rows = forest.len();
     let num_cols = if !forest[0].is_empty() {
         forest[0].len()
@@ -87,10 +92,10 @@ fn get_vectors(forest: &Forest) -> Vec<(Position, Direction)> {
     let mut vectors = Vec::new();
 
     // Add edges in order of top, right, bottom, left
-    vectors.extend((1..num_cols-1).map(|j| ((0, j), DOWN)));
-    vectors.extend((1..num_rows-1).map(|i| ((i, num_cols-1), LEFT)));
-    vectors.extend((1..num_cols-1).rev().map(|j| ((num_rows-1, j), UP)));
-    vectors.extend((1..num_rows-1).rev().map(|i| ((i, 0), RIGHT)));
+    vectors.extend((1..num_cols - 1).map(|j| ((0, j), DOWN)));
+    vectors.extend((1..num_rows - 1).map(|i| ((i, num_cols - 1), LEFT)));
+    vectors.extend((1..num_cols - 1).rev().map(|j| ((num_rows - 1, j), UP)));
+    vectors.extend((1..num_rows - 1).rev().map(|i| ((i, 0), RIGHT)));
     vectors
 }
 

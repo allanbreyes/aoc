@@ -101,7 +101,7 @@ impl Test {
 
     fn get_factor(&self) -> Option<u64> {
         match self {
-            Test::DivisibleBy(x) => Some(*x)
+            Test::DivisibleBy(x) => Some(*x),
         }
     }
 }
@@ -109,11 +109,7 @@ impl Test {
 fn calculate(monkeys: &[Monkey]) -> u64 {
     let monkeys = &mut monkeys.to_owned();
     monkeys.sort_by(|a, b| b.inspects.cmp(&a.inspects));
-    let pair: Vec<u64> = monkeys
-        .iter()
-        .take(2)
-        .map(|m| m.inspects as u64)
-        .collect();
+    let pair: Vec<u64> = monkeys.iter().take(2).map(|m| m.inspects as u64).collect();
     pair.iter().product()
 }
 
@@ -127,39 +123,60 @@ fn find_mod(monkeys: &[Monkey]) -> u64 {
 }
 
 fn parse(input: &str) -> Vec<Monkey> {
-    input.trim().split("\n\n").map(|block| {
-        let mut iter = block.lines();
-        iter.next();
-        Monkey {
-            items: iter
-                .next()
-                .unwrap()
-                .rsplit_once(':')
-                .unwrap().1
-                .split(',')
-                .map(|x| x.trim().parse().unwrap())
-                .collect(),
-            operation: iter
-                .next()
-                .unwrap()
-                .rsplit_once(':')
-                .unwrap().1
-                .trim()
-                .parse()
-                .unwrap(),
-            test: iter
-                .next()
-                .unwrap()
-                .rsplit_once(':')
-                .unwrap().1
-                .trim()
-                .parse()
-                .unwrap(),
-            pass: iter.next().unwrap().split(' ').last().unwrap().parse().unwrap(),
-            fail: iter.next().unwrap().split(' ').last().unwrap().parse().unwrap(),
-            inspects: 0,
-        }
-    }).collect()
+    input
+        .trim()
+        .split("\n\n")
+        .map(|block| {
+            let mut iter = block.lines();
+            iter.next();
+            Monkey {
+                items: iter
+                    .next()
+                    .unwrap()
+                    .rsplit_once(':')
+                    .unwrap()
+                    .1
+                    .split(',')
+                    .map(|x| x.trim().parse().unwrap())
+                    .collect(),
+                operation: iter
+                    .next()
+                    .unwrap()
+                    .rsplit_once(':')
+                    .unwrap()
+                    .1
+                    .trim()
+                    .parse()
+                    .unwrap(),
+                test: iter
+                    .next()
+                    .unwrap()
+                    .rsplit_once(':')
+                    .unwrap()
+                    .1
+                    .trim()
+                    .parse()
+                    .unwrap(),
+                pass: iter
+                    .next()
+                    .unwrap()
+                    .split(' ')
+                    .last()
+                    .unwrap()
+                    .parse()
+                    .unwrap(),
+                fail: iter
+                    .next()
+                    .unwrap()
+                    .split(' ')
+                    .last()
+                    .unwrap()
+                    .parse()
+                    .unwrap(),
+                inspects: 0,
+            }
+        })
+        .collect()
 }
 
 fn pretty_print(monkeys: Vec<Monkey>) {
@@ -187,11 +204,13 @@ fn simulate(monkeys: &[Monkey], degrade: bool, m: u64) -> Vec<Monkey> {
             if degrade {
                 operations.push(Operation::Div(3));
             }
-            let new_item = operations
-                .iter()
-                .fold(item, |acc, op| op.apply(acc, m));
+            let new_item = operations.iter().fold(item, |acc, op| op.apply(acc, m));
 
-            let j = if monkey.test.apply(new_item) { monkey.pass } else { monkey.fail } as usize;
+            let j = if monkey.test.apply(new_item) {
+                monkey.pass
+            } else {
+                monkey.fail
+            } as usize;
             let target = monkeys.get_mut(j).unwrap();
             target.items.push_back(new_item);
         }
@@ -199,7 +218,6 @@ fn simulate(monkeys: &[Monkey], degrade: bool, m: u64) -> Vec<Monkey> {
 
     monkeys.to_vec()
 }
-
 
 fn main() {
     let input = &advent_of_code::read_file("inputs", 11);

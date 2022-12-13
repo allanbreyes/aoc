@@ -8,23 +8,23 @@ pub fn part_two(input: &str) -> Option<i32> {
 
 fn get_calories(input: &str, n: usize) -> Option<i32> {
     // Parse the input and sum each group's calories
-    let mut calories: Vec<i32> = input.split("\n\n").map(|elf| {
-        elf.split('\n')
-        .map(|line| line.parse::<i32>().unwrap_or(0))
-        .reduce(|a, b| a + b)
-        .unwrap_or(0)
-    })
-    .collect();
+    let mut calories: Vec<i32> = input
+        .split("\n\n")
+        .map(|elf| {
+            elf.split('\n')
+                .map(|line| line.parse::<i32>().unwrap_or(0))
+                .reduce(|a, b| a + b)
+                .unwrap_or(0)
+        })
+        .collect();
 
     // Sort and return the sum of the top N
     calories.sort();
     calories
-    .iter()
-    .rev()
-    .take(n)
-    .fold(Some(0), |acc, &x| {
-        Some(acc.unwrap_or(0) + x)
-    })
+        .iter()
+        .rev()
+        .take(n)
+        .fold(Some(0), |acc, &x| Some(acc.unwrap_or(0) + x))
 }
 
 fn main() {

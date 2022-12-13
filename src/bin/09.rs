@@ -24,10 +24,12 @@ fn simulate(moves: Vec<Move>, n: usize, offset: i32, debug: bool) -> usize {
         }
 
         for i in 1..n {
-            if !knots[i].is_adjacent(&knots[i-1]) {
-                let next = &knots[i-1].adjacents()
+            if !knots[i].is_adjacent(&knots[i - 1]) {
+                let next = &knots[i - 1]
+                    .adjacents()
                     .iter()
-                    .filter(|p| p.is_adjacent(&knots[i])).cloned()
+                    .filter(|p| p.is_adjacent(&knots[i]))
+                    .cloned()
                     .collect::<Vec<_>>()
                     .first()
                     .unwrap()
@@ -40,7 +42,7 @@ fn simulate(moves: Vec<Move>, n: usize, offset: i32, debug: bool) -> usize {
             }
         }
 
-        visited.insert(knots[n-1].clone());
+        visited.insert(knots[n - 1].clone());
         if debug {
             println!("= {}", visited.len());
             print_frame(knots.clone(), 6);
@@ -63,14 +65,12 @@ impl Position {
     fn adjacents(&self) -> Vec<Self> {
         vec![
             // Same position
-            self.clone(), 
-
+            self.clone(),
             // Cardinals
             Self::new(self.x, self.y + 1),
             Self::new(self.x, self.y - 1),
             Self::new(self.x + 1, self.y),
             Self::new(self.x - 1, self.y),
-
             // Diagonals
             Self::new(self.x + 1, self.y + 1),
             Self::new(self.x + 1, self.y - 1),
@@ -104,7 +104,7 @@ impl Move {
     fn apply(&self, position: &Position) -> Position {
         Position::new(position.x + self.x, position.y + self.y)
     }
-    
+
     /// Naively deconstruct a move into a list of 1-step moves
     fn deconstruct(&self) -> Vec<Move> {
         let mut moves = Vec::new();
@@ -139,20 +139,20 @@ impl fmt::Display for Move {
 
 fn parse(input: &str) -> Vec<Move> {
     input
-    .lines()
-    .map(|line| {
-        let (direction, distance) = line.split_once(' ').unwrap();
-        let distance = distance.parse::<i32>().unwrap();
-        match direction {
-            "U" => Move::new(-distance, 0),
-            "D" => Move::new(distance, 0),
-            "L" => Move::new(0, -distance),
-            "R" => Move::new(0, distance),
-            _ => panic!("unknown direction: {}", direction),
-        }
-    })
-    .flat_map(|m| m.deconstruct())
-    .collect()
+        .lines()
+        .map(|line| {
+            let (direction, distance) = line.split_once(' ').unwrap();
+            let distance = distance.parse::<i32>().unwrap();
+            match direction {
+                "U" => Move::new(-distance, 0),
+                "D" => Move::new(distance, 0),
+                "L" => Move::new(0, -distance),
+                "R" => Move::new(0, distance),
+                _ => panic!("unknown direction: {}", direction),
+            }
+        })
+        .flat_map(|m| m.deconstruct())
+        .collect()
 }
 
 fn print_frame(knots: Vec<Position>, len: usize) {

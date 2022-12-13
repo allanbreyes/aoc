@@ -1,16 +1,14 @@
 pub fn part_one(input: &str) -> Option<u32> {
     let binding = parse(input);
-    let contained = binding.iter().filter(|(left, right)| {
-        left.contains(right) || right.contains(left)
-    });
+    let contained = binding
+        .iter()
+        .filter(|(left, right)| left.contains(right) || right.contains(left));
     Some(contained.count() as u32)
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
     let binding = parse(input);
-    let overlapped = binding.iter().filter(|(left, right)| {
-        left.overlaps(right)
-    });
+    let overlapped = binding.iter().filter(|(left, right)| left.overlaps(right));
     Some(overlapped.count() as u32)
 }
 
@@ -52,10 +50,11 @@ fn parse_line(line: &str) -> Option<(Range, Range)> {
 }
 
 fn parse(input: &str) -> Vec<(Range, Range)> {
-    input.trim().lines().map(|line| {
-        parse_line(line).unwrap()
-    })
-    .collect()
+    input
+        .trim()
+        .lines()
+        .map(|line| parse_line(line).unwrap())
+        .collect()
 }
 
 fn main() {

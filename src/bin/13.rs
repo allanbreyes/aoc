@@ -13,18 +13,15 @@ use nom::{
 
 pub fn part_one(input: &str) -> Option<usize> {
     let (_, pairs) = parse_pairs(input).unwrap();
-    let sum = pairs
-        .iter()
-        .enumerate()
-        .fold(0, |acc, (i, pair)| {
-            let (l, r) = pair;
-            if l < r {
-                acc + i + 1
-            } else {
-                acc
-            }
-        });
-        
+    let sum = pairs.iter().enumerate().fold(0, |acc, (i, pair)| {
+        let (l, r) = pair;
+        if l < r {
+            acc + i + 1
+        } else {
+            acc
+        }
+    });
+
     Some(sum)
 }
 
@@ -73,7 +70,7 @@ impl Display for Packet {
                     write!(f, "{}", item)?;
                 }
                 write!(f, "]")
-            },
+            }
         }
     }
 }
@@ -106,31 +103,26 @@ impl PartialOrd for Packet {
                 }
 
                 l.len().partial_cmp(&r.len())
-            },
+            }
 
             // If exactly one value is an integer, convert the integer to a list
             // which contains that integer as its only value, then retry the
             // comparison.
-            (Packet::List(_), Packet::Integer(_)) => self.partial_cmp(&Packet::List(vec![other.clone()])),
-            (Packet::Integer(_), Packet::List(_)) => Packet::List(vec![self.clone()]).partial_cmp(other),
+            (Packet::List(_), Packet::Integer(_)) => {
+                self.partial_cmp(&Packet::List(vec![other.clone()]))
+            }
+            (Packet::Integer(_), Packet::List(_)) => {
+                Packet::List(vec![self.clone()]).partial_cmp(other)
+            }
         }
     }
 }
 
 fn parse_packet(input: &str) -> IResult<&str, Packet> {
     alt((
+        map(u32, Packet::Integer),
         map(
-            u32, 
-            Packet::Integer,
-        ),
-        map(
-            delimited(
-                tag("["),
-                separated_list0(
-                    tag(","),
-                    parse_packet
-                ),
-                tag("]")),
+            delimited(tag("["), separated_list0(tag(","), parse_packet), tag("]")),
             Packet::List,
         ),
     ))(input)
@@ -144,12 +136,7 @@ fn parse_pair(input: &str) -> IResult<&str, (Packet, Packet)> {
 }
 
 fn parse_pairs(input: &str) -> IResult<&str, Vec<(Packet, Packet)>> {
-    many0(
-        terminated(
-            parse_pair,
-            opt(newline),
-        )
-    )(input)
+    many0(terminated(parse_pair, opt(newline)))(input)
 }
 
 fn parse_all(input: &str) -> IResult<&str, Vec<Packet>> {

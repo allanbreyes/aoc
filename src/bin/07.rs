@@ -38,9 +38,11 @@ fn get_sizes(input: &str) -> HashMap<String, u32> {
             "$" => {
                 match parts[1..] {
                     ["cd", "/"] => pwd.clear(), // Go back to root
-                    ["cd", ".."] => { let _ = pwd.pop(); }, // Go back by one
+                    ["cd", ".."] => {
+                        let _ = pwd.pop();
+                    } // Go back by one
                     ["cd", folder] => pwd.push(folder), // Go into a folder
-                    ["ls"] => {}, // No-op; handle output later
+                    ["ls"] => {}                // No-op; handle output later
                     _ => panic!("undefined behavior"),
                 }
             }

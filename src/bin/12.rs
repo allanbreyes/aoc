@@ -22,9 +22,7 @@ pub fn part_two(input: &str) -> Option<u32> {
     // NOTE: this isn't cached at all, so it's super slow
     let result = starts
         .iter()
-        .filter_map(|start| {
-            dijkstra(&start.clone(), |node| successors(node, &grid), success)
-        })
+        .filter_map(|start| dijkstra(&start.clone(), |node| successors(node, &grid), success))
         .map(|(_, cost)| cost)
         .min();
     Some(result.unwrap() as u32)
@@ -59,16 +57,17 @@ fn parse(input: &str) -> (Grid, Node) {
         .lines()
         .enumerate()
         .map(|(i, line)| {
-            line.chars().enumerate().map(|(j, c)| {
-                match c {
+            line.chars()
+                .enumerate()
+                .map(|(j, c)| match c {
                     'S' => {
                         start = Node::Start(i as i32, j as i32);
                         start.clone()
-                    },
+                    }
                     'E' => Node::End(i as i32, j as i32, SUMMIT),
                     _ => Node::Generic(i as i32, j as i32, c as u32 - 'a' as u32),
-                }
-            }).collect()
+                })
+                .collect()
         })
         .collect();
     (grid, start)
@@ -86,7 +85,7 @@ fn successors(node: &Node, grid: &Grid) -> Vec<(Node, usize)> {
     let mut result = Vec::new();
     let (rows, cols) = shape(grid);
     let (i, j) = node.coords() as (i32, i32);
-    let cardinals  = vec![(i - 1, j), (i + 1, j), (i, j - 1), (i, j + 1)];
+    let cardinals = vec![(i - 1, j), (i + 1, j), (i, j - 1), (i, j + 1)];
     let neighbors: Vec<(i32, i32)> = cardinals
         .iter()
         .filter(|(i, j)| *i >= 0 && *i < rows as i32 && *j >= 0 && *j < cols as i32)
@@ -101,8 +100,8 @@ fn successors(node: &Node, grid: &Grid) -> Vec<(Node, usize)> {
                     (other.clone(), 1)
                 })
                 .collect();
-        },
-        Node::End(_, _, _) => {},
+        }
+        Node::End(_, _, _) => {}
         Node::Generic(_, _, h) => {
             result = neighbors
                 .iter()
@@ -117,7 +116,7 @@ fn successors(node: &Node, grid: &Grid) -> Vec<(Node, usize)> {
                 })
                 .map(|other| (other, 1))
                 .collect()
-        },
+        }
     }
     result
 }
