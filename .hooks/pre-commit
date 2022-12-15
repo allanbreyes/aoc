@@ -27,3 +27,12 @@ if [ $FMT -ne 0 ]; then
     cargo fmt
     exit 1
 fi
+
+echo -e "$GRN[*]$RST cargo clippy"
+cargo clippy
+FMT=$?
+if [ $FMT -ne 0 ]; then
+    echo -e "$RED[!]$RST clippy failed, aborting commit and fixing code"
+    cargo clippy --fix --allow-dirty
+    exit 1
+fi

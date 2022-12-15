@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use std::collections::HashSet;
 use std::fmt;
 
@@ -104,15 +105,15 @@ impl World {
                 let (mut dx, mut dy) =
                     (end.x as i32 - start.x as i32, end.y as i32 - start.y as i32);
                 while dx != 0 || dy != 0 {
-                    if dx > 0 {
-                        dx -= 1;
-                    } else if dx < 0 {
-                        dx += 1;
+                    match dx.cmp(&0) {
+                        Ordering::Greater => dx -= 1,
+                        Ordering::Less => dx += 1,
+                        Ordering::Equal => (),
                     }
-                    if dy > 0 {
-                        dy -= 1;
-                    } else if dy < 0 {
-                        dy += 1;
+                    match dy.cmp(&0) {
+                        Ordering::Greater => dy -= 1,
+                        Ordering::Less => dy += 1,
+                        Ordering::Equal => (),
                     }
                     rocks.insert(Pos::new(
                         (start.x as i32 + dx) as u32,
@@ -202,7 +203,7 @@ impl World {
         }
 
         if !converged {
-            fut.sand.insert(pos.clone());
+            fut.sand.insert(pos);
         }
 
         (fut, converged)
@@ -279,7 +280,7 @@ mod tests {
     fn test_parse() {
         let input = "1,2 -> 3,4\n5,6 -> 7,8\n";
         assert_eq!(
-            parse(&input),
+            parse(input),
             Ok((
                 "",
                 vec![

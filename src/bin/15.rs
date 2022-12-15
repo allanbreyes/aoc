@@ -40,11 +40,10 @@ impl Pos {
 
     fn perimeter(&self, radius: usize) -> Vec<Pos> {
         (self.x - radius as i32..self.x + radius as i32)
-            .map(|x| {
+            .flat_map(|x| {
                 let dy = radius as i32 - (x - self.x).abs();
                 [Pos::new(x, self.y - dy), Pos::new(x, self.y + dy)]
             })
-            .flatten()
             .collect()
     }
 }
@@ -58,7 +57,7 @@ fn find_beacon(data: Vec<(Pos, Pos)>, max: i32) -> i64 {
     'sensor: for (sensor, beacon) in &data {
         // Assume that the distress beacon is just outside the perimeter, or
         // else there would be a non-unique solution
-        let radius = sensor.distance(&beacon) as usize + 1;
+        let radius = sensor.distance(beacon) as usize + 1;
 
         'candidate: for candidate in sensor.perimeter(radius) {
             if candidate.x < min || candidate.x > max || candidate.y < min || candidate.y > max {
@@ -74,7 +73,7 @@ fn find_beacon(data: Vec<(Pos, Pos)>, max: i32) -> i64 {
                     continue 'other;
                 }
 
-                let other_radius = other_sensor.distance(&other_beacon);
+                let other_radius = other_sensor.distance(other_beacon);
                 if other_sensor.distance(&candidate) <= other_radius {
                     rejected.insert(candidate);
                     continue 'candidate;
