@@ -2,21 +2,30 @@ use std::collections::HashMap;
 
 pub fn part_one(input: &str) -> Option<usize> {
     let elves = parse(input);
-    let map = simulate(elves, 10);
-    // println!("== Final ==");
-    // draw(&map);
+    let (map, _) = simulate(elves, 10);
     let elves = map.keys().cloned().collect::<Vec<_>>();
     let (min, max) = bounds(&elves);
     let squares = ((max.0 - min.0 + 1) * (max.1 - min.1 + 1)) as usize - elves.len();
     Some(squares)
 }
 
-pub fn part_two(_input: &str) -> Option<u32> {
-    None
+pub fn part_two(input: &str) -> Option<usize> {
+    let elves = parse(input);
+    let (_, settled) = simulate(elves, 10_000);
+    Some(settled + 1)
 }
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
-enum Dir { NW, N, NE, E, SE, S, SW, W }
+enum Dir {
+    NW,
+    N,
+    NE,
+    E,
+    SE,
+    S,
+    SW,
+    W,
+}
 
 impl Dir {
     fn robin(i: usize) -> Vec<Self> {
@@ -80,19 +89,17 @@ fn bounds(elves: &Vec<Pos>) -> (Pos, Pos) {
     (min, max)
 }
 
-fn simulate(elves: Vec<Pos>, rounds: usize) -> HashMap<Pos, Option<Pos>> {
-    let mut map: HashMap<Pos, Option<Pos>> = elves.iter().map(|pos| (pos.clone(), None)).collect();
-    for i in 0..rounds {
-        let dir = Dir::robin(i);
-        // println!("== Round {} {:?} ==", i, dir);
-        // draw(&map);
-        // println!();
+type Map = HashMap<Pos, Option<Pos>>;
 
+fn simulate(elves: Vec<Pos>, rounds: usize) -> (Map, usize) {
+    let mut map: Map = elves.iter().map(|pos| (*pos, None)).collect();
+    let mut settled = 0;
+    for i in 0..rounds {
         // First half: "check" phase
-        let mut check: HashMap<Pos, Option<Pos>> = HashMap::new();
+        let mut check: Map = HashMap::new();
         let mut moves: HashMap<Pos, usize> = HashMap::new();
         for pos in map.keys() {
-            check.insert(pos.clone(), None);
+            check.insert(*pos, None);
 
             if !pos.neighbors().iter().any(|adj| map.contains_key(adj)) {
                 continue;
@@ -101,7 +108,8 @@ fn simulate(elves: Vec<Pos>, rounds: usize) -> HashMap<Pos, Option<Pos>> {
             for dir in Dir::robin(i) {
                 if !pos.adjacents(dir).iter().any(|adj| map.contains_key(adj)) {
                     let new = pos.to(dir);
-                    check.insert(pos.clone(), Some(new));
+                    check.insert(*pos, Some(new));
+                    #[allow(clippy::map_entry)]
                     if moves.contains_key(&new) {
                         moves.insert(new, moves[&new] + 1);
                     } else {
@@ -114,18 +122,29 @@ fn simulate(elves: Vec<Pos>, rounds: usize) -> HashMap<Pos, Option<Pos>> {
 
         // Second half: "move" phase
         map = HashMap::new();
+        let mut moved = false;
         for (pos, next) in check {
-            if next.is_some() && moves[&next.unwrap()] == 1 {
-                map.insert(next.unwrap(), None);
-            } else {
-                map.insert(pos, None);
+            match next {
+                Some(next) if moves[&next] == 1 => {
+                    map.insert(next, None);
+                    moved = true;
+                }
+                _ => {
+                    map.insert(pos, None);
+                }
             }
+        }
+
+        if !moved {
+            settled = i;
+            break;
         }
     }
 
-    map
+    (map, settled)
 }
 
+#[allow(dead_code)]
 fn draw(map: &HashMap<Pos, Option<Pos>>) {
     let (min, max) = bounds(&map.keys().cloned().collect::<Vec<_>>());
     println!("  {:2} -> {}", min.0, max.0);
@@ -147,7 +166,7 @@ fn parse(input: &str) -> Vec<Pos> {
     input
         .lines()
         .enumerate()
-        .map(|(i, line)| {
+        .flat_map(|(i, line)| {
             line.chars()
                 .enumerate()
                 .filter_map(|(j, c)| match c {
@@ -156,13 +175,11 @@ fn parse(input: &str) -> Vec<Pos> {
                 })
                 .collect::<Vec<_>>()
         })
-        .flatten()
         .collect()
 }
 
 fn main() {
     let input = &advent_of_code::read_file("inputs", 23);
-    // let input = &advent_of_code::read_file("examples", 23);
     advent_of_code::solve!(1, part_one, input);
     advent_of_code::solve!(2, part_two, input);
 }
@@ -180,6 +197,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let input = advent_of_code::read_file("examples", 23);
-        assert_eq!(part_two(&input), None);
+        assert_eq!(part_two(&input), Some(20));
     }
 }
