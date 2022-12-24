@@ -6,21 +6,20 @@ use std::{
 
 use pathfinding::prelude::dijkstra;
 
-const ANIMATE: u64 = 25; // Frame delay in ms. Set to zero for no animation.
-
 pub fn part_one(input: &str) -> Option<usize> {
     let init: Grid = parse(input);
     let grids = make_grids(&init, 300);
-    let (_, cost) = shortest(&grids, &Pos(0, 1, 0), Tile::End).expect("no path found");
+    let (_, cost) = shortest(&grids, &Pos(0, 1, 0), Tile::End, false).expect("no path found");
     Some(cost)
 }
 
 pub fn part_two(input: &str) -> Option<usize> {
     let init: Grid = parse(input);
+    let a = init.len() > 10;
     let grids = make_grids(&init, 1000);
-    let (there, _) = shortest(&grids, &Pos(0, 1, 0), Tile::End).expect("no path found");
-    let (back, _) = shortest(&grids, there.last().unwrap(), Tile::Start).expect("no path found");
-    let (again, _) = shortest(&grids, back.last().unwrap(), Tile::End).expect("no path found");
+    let (there, _) = shortest(&grids, &Pos(0, 1, 0), Tile::End, a).expect("no path found");
+    let (back, _) = shortest(&grids, there.last().unwrap(), Tile::Start, a).expect("no path found");
+    let (again, _) = shortest(&grids, back.last().unwrap(), Tile::End, a).expect("no path found");
     Some(again.last().unwrap().2 as usize)
 }
 
@@ -93,19 +92,20 @@ impl Pos {
     }
 }
 
-fn shortest(grids: &Grids, start: &Pos, goal: Tile) -> Option<(Vec<Pos>, usize)> {
+fn shortest(grids: &Grids, start: &Pos, goal: Tile, animate: bool) -> Option<(Vec<Pos>, usize)> {
     let result = dijkstra(
         start,
         |p: &Pos| p.successors(grids),
         |p: &Pos| p.success(grids, goal),
     );
 
-    if ANIMATE > 0 {
+    if animate {
         if let Some((path, _)) = &result {
+            print!("\x1B[2J\x1B[1;1H");
             for pos in path {
                 let (r, c, t) = (pos.0, pos.1, pos.2);
                 draw(&grids[t], (r, c), true);
-                sleep(Duration::from_millis(ANIMATE as u64));
+                sleep(Duration::from_millis(10));
             }
         }
     }
@@ -171,29 +171,29 @@ fn tick(grid: &Grid) -> Grid {
 
 fn draw(grid: &Grid, pos: (usize, usize), clear: bool) {
     if clear {
-        print!("\x1B[2J\x1B[1;1H");
+        print!("\x1B[1;1H");
     }
     for (i, row) in grid.iter().enumerate() {
         for (j, tile) in row.iter().enumerate() {
             print!(
                 "{}",
                 if pos == (i, j) {
-                    "\x1b[91m☺\x1b[0m"
+                    "\x1b[0;31m☺\x1b[0m"
                 } else {
                     match tile {
-                        Tile::Start => "S",
-                        Tile::End => "E",
+                        Tile::Start => "\x1b[0;34mS\x1b[0m",
+                        Tile::End => "\x1b[0;32mE\x1b[0m",
                         Tile::Wall => "#",
-                        Tile::Open => ".",
+                        Tile::Open => " ",
                         Tile::Blizzard(k) => match *k {
-                            UP => "^",
-                            RIGHT => ">",
-                            DOWN => "v",
-                            LEFT => "<",
+                            UP => "\x1b[38;5;240m^\x1b[0m",
+                            RIGHT => "\x1b[38;5;240m>\x1b[0m",
+                            DOWN => "\x1b[38;5;240mv\x1b[0m",
+                            LEFT => "\x1b[38;5;240m<\x1b[0m",
                             _ => match k.count_ones() {
-                                2 => "2",
-                                3 => "3",
-                                4 => "4",
+                                2 => "\x1b[38;5;245m*\x1b[0m",
+                                3 => "\x1b[38;5;250m%\x1b[0m",
+                                4 => "\x1b[38;5;255m@\x1b[0m",
                                 _ => panic!("too many blizzards: {}", k),
                             },
                         },
