@@ -1,6 +1,12 @@
-use std::fmt::{Debug, Formatter, Result as FmtResult};
+use std::{
+    fmt::{Debug, Formatter, Result as FmtResult},
+    thread::sleep,
+    time::Duration,
+};
 
 use pathfinding::prelude::dijkstra;
+
+const ANIMATE: u64 = 25; // Frame delay in ms. Set to zero for no animation.
 
 pub fn part_one(input: &str) -> Option<usize> {
     let init: Grid = parse(input);
@@ -94,16 +100,13 @@ fn shortest(grids: &Grids, start: &Pos, goal: Tile) -> Option<(Vec<Pos>, usize)>
         |p: &Pos| p.success(grids, goal),
     );
 
-    let debug: Option<Pos> = None;
-    if let Some(pos) = debug {
-        draw(&grids[pos.2], (pos.0, pos.1));
-        let successors: Vec<Pos> = pos
-            .successors(grids)
-            .iter()
-            .map(|(p, _)| p.clone())
-            .collect();
-        if successors.is_empty() {
-            draw(&grids[pos.2 + 1], (successors[0].0, successors[0].1));
+    if ANIMATE > 0 {
+        if let Some((path, _)) = &result {
+            for pos in path {
+                let (r, c, t) = (pos.0, pos.1, pos.2);
+                draw(&grids[t], (r, c), true);
+                sleep(Duration::from_millis(ANIMATE as u64));
+            }
         }
     }
 
@@ -166,7 +169,10 @@ fn tick(grid: &Grid) -> Grid {
     next
 }
 
-fn draw(grid: &Grid, pos: (usize, usize)) {
+fn draw(grid: &Grid, pos: (usize, usize), clear: bool) {
+    if clear {
+        print!("\x1B[2J\x1B[1;1H");
+    }
     for (i, row) in grid.iter().enumerate() {
         for (j, tile) in row.iter().enumerate() {
             print!(
