@@ -236,7 +236,6 @@ fn parse(input: &str) -> Grid {
 
 fn main() {
     let input = &advent_of_code::read_file("inputs", 24);
-    // let input = &advent_of_code::read_file("examples", 24);
     advent_of_code::solve!(1, part_one, input);
     advent_of_code::solve!(2, part_two, input);
 }
@@ -254,6 +253,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let input = advent_of_code::read_file("examples", 24);
-        assert_eq!(part_two(&input), None);
+        assert_eq!(part_two(&input), Some(54));
     }
 }
