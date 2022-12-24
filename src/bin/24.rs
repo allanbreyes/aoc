@@ -4,12 +4,13 @@ use std::{
     time::Duration,
 };
 
-use pathfinding::prelude::dijkstra;
+use pathfinding::prelude::astar;
 
 pub fn part_one(input: &str) -> Option<usize> {
     let init: Grid = parse(input);
     let grids = make_grids(&init, 300);
-    let (_, cost) = shortest(&grids, &Pos(0, 1, 0), Tile::End, false).expect("no path found");
+    let end = find_tile(&grids[0], Tile::End).expect("no end tile found");
+    let (_, cost) = shortest(&grids, &Pos(0, 1, 0), end, false).expect("no path found");
     Some(cost)
 }
 
@@ -17,9 +18,11 @@ pub fn part_two(input: &str) -> Option<usize> {
     let init: Grid = parse(input);
     let a = init.len() > 10;
     let grids = make_grids(&init, 1000);
-    let (there, _) = shortest(&grids, &Pos(0, 1, 0), Tile::End, a).expect("no path found");
-    let (back, _) = shortest(&grids, there.last().unwrap(), Tile::Start, a).expect("no path found");
-    let (again, _) = shortest(&grids, back.last().unwrap(), Tile::End, a).expect("no path found");
+    let start = find_tile(&grids[0], Tile::Start).expect("no start tile found");
+    let end = find_tile(&grids[0], Tile::End).expect("no end tile found");
+    let (there, _) = shortest(&grids, &Pos(0, 1, 0), end, a).expect("no path found");
+    let (back, _) = shortest(&grids, there.last().unwrap(), start, a).expect("no path found");
+    let (again, _) = shortest(&grids, back.last().unwrap(), end, a).expect("no path found");
     Some(again.last().unwrap().2 as usize)
 }
 
@@ -39,6 +42,7 @@ enum Tile {
 
 type Grid = Vec<Vec<Tile>>;
 type Grids = Vec<Grid>;
+type Pos2D = (usize, usize);
 
 #[derive(Clone, PartialEq, Eq, Hash)]
 struct Pos(usize, usize, usize);
@@ -86,17 +90,18 @@ impl Pos {
         .collect()
     }
 
-    fn success(&self, grids: &Grids, goal: Tile) -> bool {
-        let tile = &grids[self.2][self.0][self.1];
-        tile == &goal
+    fn success(&self, goal: Pos2D) -> bool {
+        let pos2d = (self.0, self.1);
+        pos2d == goal
     }
 }
 
-fn shortest(grids: &Grids, start: &Pos, goal: Tile, animate: bool) -> Option<(Vec<Pos>, usize)> {
-    let result = dijkstra(
+fn shortest(grids: &Grids, start: &Pos, goal: Pos2D, animate: bool) -> Option<(Vec<Pos>, usize)> {
+    let result = astar(
         start,
         |p: &Pos| p.successors(grids),
-        |p: &Pos| p.success(grids, goal),
+        |p: &Pos| heuristic(p, goal),
+        |p: &Pos| p.success(goal),
     );
 
     if animate {
@@ -111,6 +116,23 @@ fn shortest(grids: &Grids, start: &Pos, goal: Tile, animate: bool) -> Option<(Ve
     }
 
     result
+}
+
+fn find_tile(grid: &Grid, tile: Tile) -> Option<Pos2D> {
+    for (i, row) in grid.iter().enumerate() {
+        for (j, col) in row.iter().enumerate() {
+            if col == &tile {
+                return Some((i, j));
+            }
+        }
+    }
+    None
+}
+
+fn heuristic(pos: &Pos, goal: Pos2D) -> usize {
+    let pos2d = (pos.0, pos.1);
+    (goal.0 as i32 - pos2d.0 as i32).unsigned_abs() as usize
+        + (goal.1 as i32 - pos2d.1 as i32).unsigned_abs() as usize
 }
 
 fn make_grids(init: &Grid, max_t: usize) -> Grids {
@@ -169,7 +191,7 @@ fn tick(grid: &Grid) -> Grid {
     next
 }
 
-fn draw(grid: &Grid, pos: (usize, usize), clear: bool) {
+fn draw(grid: &Grid, pos: Pos2D, clear: bool) {
     if clear {
         print!("\x1B[1;1H");
     }
