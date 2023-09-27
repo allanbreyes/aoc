@@ -16,6 +16,6 @@ class Solution:
 
 if __name__ == "__main__":
     with open(f"./inputs/{Solution.key}.txt", "r") as fh:
-        input = fh.read()
+        input = fh.read().strip()
     print("Part 1:", Solution(input).part_one())
     print("Part 2:", Solution(input).part_two())
