@@ -13,6 +13,7 @@ in pkgs.mkShell {
   ];
   buildInputs = with pkgs; [
     # Python
+    py.numpy
     py.python
     py.venvShellHook
 

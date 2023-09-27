@@ -3,3 +3,4 @@ pip
 pytest
 pytest-mypy
 pytest-watch
+# numpy (see shell.nix)
