@@ -19,7 +19,6 @@ class Solution:
                     raise ValueError("unrecognized character")
         return floor
 
-
     def part_two(self):
         floor = 0
         for i, char in enumerate(self.input.strip()):

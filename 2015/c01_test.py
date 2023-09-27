@@ -7,6 +7,7 @@ from c01 import Solution
 def example():
     return "(()))("
 
+
 def test_part_one(example):
     assert Solution(example).part_one() == 0
 
