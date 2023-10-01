@@ -13,6 +13,9 @@ class Solution:
     def part_two(self) -> Optional[str]:
         pass
 
+    def parse(self):
+        pass
+
 
 if __name__ == "__main__":
     with open(f"./inputs/{Solution.key}.txt", "r") as fh:

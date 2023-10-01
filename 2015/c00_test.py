@@ -1,3 +1,4 @@
+from textwrap import dedent
 import pytest
 
 from c00 import Solution
@@ -5,7 +6,13 @@ from c00 import Solution
 
 @pytest.fixture
 def example():
-    return None
+    return dedent(
+        """\
+        foo
+        bar
+        baz
+    """
+    ).strip()
 
 
 def test_part_one(example):

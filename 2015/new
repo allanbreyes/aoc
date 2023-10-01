@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
 newest="$(ls c*.py | grep -Eo 'c([0-9]+)\.py' | grep -Eo '[0-9]+' | sort -n | tail -n 1 | awk '{printf "%02d\n", $1 + 1}')"
-cp c00.py "c${newest}.py"
-cp c00_test.py "c${newest}_test.py"
+py="c${newest}.py"
+pytest="c${newest}_test.py"
+
+cp c00.py "$py"
+cp c00_test.py "$pytest"
+find . -type f -name "c${newest}*.py" -exec sed -i "s/00/${newest}/g" {} \;
+
+echo "$py"
+echo "$pytest"
