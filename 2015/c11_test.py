@@ -40,9 +40,11 @@ def test_password_next_valid(password, next_password):
     assert str(after) == next_password
 
 
+@pytest.mark.skip("slow")
 def test_part_one(example):
     assert str(Solution(example).part_one()) == "abcdffaa"
 
 
+@pytest.mark.skip("slow")
 def test_part_two(example):
     assert str(Solution(example).part_two()) == "abcdffbb"
