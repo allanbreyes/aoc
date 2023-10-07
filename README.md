@@ -1,7 +1,7 @@
 :christmas_tree: Advent of Code
 ===============================
 
-- [ ] 2015: :snake: Python
+- [x] 2015: :snake: Python
 - [ ] 2016: ?
 - [ ] 2017: ?
 - [ ] 2018: ?
