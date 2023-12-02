@@ -1,4 +1,4 @@
-package main
+package d01
 
 import (
 	"testing"
@@ -11,7 +11,7 @@ func TestDay1Part1(t *testing.T) {
 pqr3stu8vwx
 a1b2c3d4e5f
 treb7uchet`
-	got := Day1Part1(input)
+	got := SolvePart1(input)
 	want := 142
 	if got != want {
 		t.Errorf("got %d, want %d", got, want)
@@ -26,7 +26,7 @@ xtwone3four
 4nineeightseven2
 zoneight234
 7pqrstsixteen`
-	got := Day1Part2(input)
+	got := SolvePart2(input)
 	want := 281
 	if got != want {
 		t.Errorf("got %d, want %d", got, want)

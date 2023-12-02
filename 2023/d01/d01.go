@@ -1,4 +1,4 @@
-package main
+package d01
 
 import (
 	"regexp"
@@ -19,7 +19,7 @@ var digits = map[string]int{
 	"zero":  0,
 }
 
-func Day1Part1(input string) int {
+func SolvePart1(input string) int {
 	sum := 0
 	for _, line := range parse(input) {
 		left := -1
@@ -37,7 +37,7 @@ func Day1Part1(input string) int {
 	return sum
 }
 
-func Day1Part2(input string) int {
+func SolvePart2(input string) int {
 	sum := 0
 	re := regexp.MustCompile("one|two|three|four|five|six|seven|eight|nine|zero")
 
