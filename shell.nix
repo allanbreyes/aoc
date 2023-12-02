@@ -12,6 +12,9 @@ in pkgs.mkShell {
     rustc
   ];
   buildInputs = with pkgs; [
+    # Golang
+    go
+
     # Python
     py.numpy
     py.python
