@@ -3,10 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
 	"sort"
 
 	"github.com/allanbreyes/aoc/2023/d01"
 	"github.com/allanbreyes/aoc/2023/d02"
+	"github.com/allanbreyes/aoc/2023/d03"
 )
 
 type Solution struct {
@@ -17,6 +19,7 @@ type Solution struct {
 var days = map[int]Solution{
 	1: {p1: d01.SolvePart1, p2: d01.SolvePart2},
 	2: {p1: d02.SolvePart1, p2: d02.SolvePart2},
+	3: {p1: d03.SolvePart1, p2: d03.SolvePart2},
 }
 
 func main() {
@@ -27,14 +30,13 @@ func main() {
 		keys[i] = k
 		i++
 	}
-	fmt.Println(keys)
 	sort.Slice(keys, func(i, j int) bool { return keys[i] < keys[j] })
 	last := keys[len(keys)-1]
 	day := flag.Int("day", last, "day to run")
 	flag.Parse()
 
 	// Run the solution
-	fmt.Printf("🎄 Day %d:\n", *day)
+	fmt.Fprintf(os.Stderr, "🎄 Day %d 🎄\n", *day)
 	input := LoadInput(*day, true)
 	fmt.Println(days[*day].p1(input))
 	fmt.Println(days[*day].p2(input))
