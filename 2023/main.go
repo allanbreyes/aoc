@@ -6,6 +6,7 @@ import (
 	"sort"
 
 	"github.com/allanbreyes/aoc/2023/d01"
+	"github.com/allanbreyes/aoc/2023/d02"
 )
 
 type Solution struct {
@@ -15,7 +16,7 @@ type Solution struct {
 
 var days = map[int]Solution{
 	1: {p1: d01.SolvePart1, p2: d01.SolvePart2},
-	// 2: {p1: d02.SolvePart1, p2: d02.SolvePart2},
+	2: {p1: d02.SolvePart1, p2: d02.SolvePart2},
 }
 
 func main() {
