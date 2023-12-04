@@ -9,6 +9,7 @@ import (
 	"github.com/allanbreyes/aoc/2023/d01"
 	"github.com/allanbreyes/aoc/2023/d02"
 	"github.com/allanbreyes/aoc/2023/d03"
+	"github.com/allanbreyes/aoc/2023/d04"
 )
 
 type Solution struct {
@@ -20,6 +21,7 @@ var days = map[int]Solution{
 	1: {p1: d01.SolvePart1, p2: d01.SolvePart2},
 	2: {p1: d02.SolvePart1, p2: d02.SolvePart2},
 	3: {p1: d03.SolvePart1, p2: d03.SolvePart2},
+	4: {p1: d04.SolvePart1, p2: d04.SolvePart2},
 }
 
 func main() {
