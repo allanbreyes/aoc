@@ -10,6 +10,7 @@ import (
 	"github.com/allanbreyes/aoc/2023/d02"
 	"github.com/allanbreyes/aoc/2023/d03"
 	"github.com/allanbreyes/aoc/2023/d04"
+	// TODO: insert package here
 )
 
 type Solution struct {
@@ -22,6 +23,7 @@ var days = map[int]Solution{
 	2: {p1: d02.SolvePart1, p2: d02.SolvePart2},
 	3: {p1: d03.SolvePart1, p2: d03.SolvePart2},
 	4: {p1: d04.SolvePart1, p2: d04.SolvePart2},
+	// TODO: insert day here
 }
 
 func main() {
@@ -35,7 +37,16 @@ func main() {
 	sort.Slice(keys, func(i, j int) bool { return keys[i] < keys[j] })
 	last := keys[len(keys)-1]
 	day := flag.Int("day", last, "day to run")
+
+	new := false
+	flag.BoolVar(&new, "new", false, "generate new file")
 	flag.Parse()
+
+	// Generate a new file if requested
+	if new {
+		New(*day + 1)
+		return
+	}
 
 	// Run the solution
 	fmt.Fprintf(os.Stderr, "🎄 Day %d 🎄\n", *day)
