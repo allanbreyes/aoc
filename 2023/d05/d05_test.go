@@ -48,7 +48,7 @@ func TestSolvePart1(t *testing.T) {
 
 func TestSolvePart2(t *testing.T) {
 	got := SolvePart2(input)
-	want := -1
+	want := 46
 	if got != want {
 		t.Errorf("got %d, want %d", got, want)
 	}
