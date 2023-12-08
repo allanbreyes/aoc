@@ -13,6 +13,7 @@ import (
 	"github.com/allanbreyes/aoc/2023/d05"
 	"github.com/allanbreyes/aoc/2023/d06"
 	"github.com/allanbreyes/aoc/2023/d07"
+	"github.com/allanbreyes/aoc/2023/d08"
 	// TODO: insert package here
 )
 
@@ -29,6 +30,7 @@ var days = map[int]Solution{
 	5: {p1: d05.SolvePart1, p2: d05.SolvePart2},
 	6: {p1: d06.SolvePart1, p2: d06.SolvePart2},
 	7: {p1: d07.SolvePart1, p2: d07.SolvePart2},
+	8: {p1: d08.SolvePart1, p2: d08.SolvePart2},
 	// TODO: insert day here
 }
 
