@@ -13,12 +13,12 @@ func New(day int) {
 
 import "strings"
 
-func SolvePart1(input string) int {
-	return -1
+func SolvePart1(input string) (ans int) {
+	return
 }
 
-func SolvePart2(input string) int {
-	return -1
+func SolvePart2(input string) (ans int) {
+	return
 }
 
 func parse(input string) []string {
@@ -38,7 +38,7 @@ var input = "input"
 
 func TestSolvePart1(t *testing.T) {
 	got := SolvePart1(input)
-	want := -1
+	want := 0
 	if got != want {
 		t.Errorf("got %%d, want %%d", got, want)
 	}
@@ -46,7 +46,7 @@ func TestSolvePart1(t *testing.T) {
 
 func TestSolvePart2(t *testing.T) {
 	got := SolvePart2(input)
-	want := -1
+	want := 0
 	if got != want {
 		t.Errorf("got %%d, want %%d", got, want)
 	}
