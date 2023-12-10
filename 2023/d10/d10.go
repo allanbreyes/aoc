@@ -1,6 +1,7 @@
 package d10
 
 import (
+	"fmt"
 	"log"
 	"strings"
 )
@@ -17,6 +18,12 @@ const (
 	S           = "S"
 	W           = "W"
 	X           = "X"
+)
+
+const (
+	Empty = iota
+	Pipe
+	Outside
 )
 
 var Moves = map[Direction]Coord{N: {-1, 0}, E: {0, 1}, S: {1, 0}, W: {0, -1}, X: {0, 0}}
@@ -71,26 +78,52 @@ func travel(grid [][]string, start Coord, dir Direction) (dest Coord, next Direc
 	return start, X
 }
 
+func loop(grid [][]string, start Coord, dir Direction) (coords []Coord, ok bool) {
+	fast, slow := start, start
+	fastd, slowd := dir, dir
+	for i := 0; i < len(grid)*len(grid[0]); i++ {
+		if i != 0 && fast == start {
+			return coords, true
+		}
+
+		slow, slowd = travel(grid, slow, slowd)
+		fast, fastd = travel(grid, fast, fastd)
+		coords = append(coords, fast)
+		fast, fastd = travel(grid, fast, fastd)
+		coords = append(coords, fast)
+		if slowd == X || fastd == X {
+			break
+		}
+	}
+
+	return []Coord{}, false
+}
+
+func expand(grid [][]string) (new [][]string) {
+	colsize := len(grid[0])
+	emptyrow := make([]string, colsize)
+	for i := range emptyrow {
+		emptyrow[i] = "."
+	}
+	new = append(new, emptyrow)
+	new = append(new, grid...)
+	new = append(new, emptyrow)
+
+	for i := range new {
+		new[i] = append([]string{"."}, new[i]...)
+		new[i] = append(new[i], ".")
+	}
+
+	return new
+}
+
 func SolvePart1(input string) (ans int) {
 	grid, start := parse(input)
 
 	for _, dir := range []Direction{N, E, S, W} {
-		fast, slow := start, start
-		fastd, slowd := dir, dir
-		i := 0
-		for {
-			if i != 0 && fast == start {
-				return i
-			}
-
-			slow, slowd = travel(grid, slow, slowd)
-			fast, fastd = travel(grid, fast, fastd)
-			fast, fastd = travel(grid, fast, fastd)
-			if slowd == X || fastd == X {
-				break
-			}
-
-			i++
+		coords, ok := loop(grid, start, dir)
+		if ok {
+			return len(coords) / 2
 		}
 	}
 
@@ -98,8 +131,69 @@ func SolvePart1(input string) (ans int) {
 	return
 }
 
+func flood(fill [][]int, cursor Coord) {
+	if cursor.r < 0 || cursor.r >= len(fill) || cursor.c < 0 || cursor.c >= len(fill[0]) {
+		return
+	}
+	if fill[cursor.r][cursor.c] != Empty {
+		return
+	}
+	fill[cursor.r][cursor.c] = Outside
+
+	for _, dir := range []Direction{N, E, S, W} {
+		flood(fill, Coord{cursor.r + Moves[dir].r, cursor.c + Moves[dir].c})
+	}
+}
+
 func SolvePart2(input string) (ans int) {
-	return
+	// Expand grid with padding
+	grid, start := parse(input)
+	grid = expand(grid)
+	start = Coord{start.r + 1, start.c + 1}
+
+	// Find loop
+	coords := []Coord{}
+	ok := false
+	for _, dir := range []Direction{N, E, S, W} {
+		coords, ok = loop(grid, start, dir)
+		if ok {
+			break
+		}
+	}
+	if !ok {
+		log.Fatal("no loop found")
+	}
+
+	// Initialize fill map
+	fill := make([][]int, len(grid))
+	for i := range fill {
+		fill[i] = make([]int, len(grid[0]))
+	}
+	for _, coord := range coords {
+		fill[coord.r][coord.c] = Pipe
+	}
+
+	// Flood fill and count
+	flood(fill, Coord{0, 0})
+	for i, row := range fill {
+		for j, cell := range row {
+			switch cell {
+			case Empty:
+				{
+					ans++
+					fmt.Print("\033[0;31mI\033[0m")
+				}
+			case Pipe:
+				fmt.Print(grid[i][j])
+			case Outside:
+				fmt.Print(" ")
+			default:
+				log.Fatal("unexpected cell")
+			}
+		}
+		fmt.Print("\n")
+	}
+	return ans
 }
 
 func parse(input string) (grid [][]string, start Coord) {

@@ -16,6 +16,25 @@ SJLL7
 |F--J
 LJ.LJ`
 
+var input3 = `S-------7
+|F-----7|
+||.....||
+||.....||
+|L-7.F-J|
+|..|.|..|
+L--J.L--J`
+
+var input4 = `FF7FSF7F7F7F7F7F---7
+L|LJ||||||||||||F--J
+FL-7LJLJ||||||LJL-77
+F--JF--7||LJLJ7F7FJ-
+L---JF-JLJ.||-FJLJJ7
+|F|F-JF---7F7-L7L|7|
+|FFJF7L7F-JF7|JL---7
+7-L-JL7||F7|L7F-7F7|
+L.L7LFJ|||||FJL7||LJ
+L7JLJL-JLJLJL--JLJ.L`
+
 func TestSolvePart1a(t *testing.T) {
 	got := SolvePart1(input1)
 	want := 4
@@ -32,9 +51,17 @@ func TestSolvePart1b(t *testing.T) {
 	}
 }
 
-func TestSolvePart2(t *testing.T) {
-	got := SolvePart2(input1)
-	want := 0
+func TestSolvePart2a(t *testing.T) {
+	got := SolvePart2(input3)
+	want := 4
+	if got != want {
+		t.Errorf("got %d, want %d", got, want)
+	}
+}
+
+func TestSolvePart2b(t *testing.T) {
+	got := SolvePart2(input4)
+	want := 10
 	if got != want {
 		t.Errorf("got %d, want %d", got, want)
 	}
