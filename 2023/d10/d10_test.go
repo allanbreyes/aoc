@@ -24,7 +24,26 @@ var input3 = `S-------7
 |..|.|..|
 L--J.L--J`
 
-var input4 = `FF7FSF7F7F7F7F7F---7
+var input3a = `S------7
+|F----7|
+||....||
+||....||
+|L-7F-J|
+|..||..|
+L--JL--J`
+
+var input4 = `.F----7F7F7F7F-7....
+.|F--7||||||||FJ....
+.||.FJ||||||||L7....
+FJL7L7LJLJ||LJ.L-7..
+L--J.L7...LJS7F-7L7.
+....F-J..F7FJ|L7L7L7
+....L7.F7||L7|.L7L7|
+.....|FJLJ|FJ|F7|.LJ
+....FJL-7.||.||||...
+....L---J.LJ.LJLJ...`
+
+var input5 = `FF7FSF7F7F7F7F7F---7
 L|LJ||||||||||||F--J
 FL-7LJLJ||||||LJL-77
 F--JF--7||LJLJ7F7FJ-
@@ -57,10 +76,23 @@ func TestSolvePart2a(t *testing.T) {
 	if got != want {
 		t.Errorf("got %d, want %d", got, want)
 	}
+
+	got = SolvePart2(input3a)
+	if got != want {
+		t.Errorf("got %d, want %d", got, want)
+	}
 }
 
 func TestSolvePart2b(t *testing.T) {
 	got := SolvePart2(input4)
+	want := 8
+	if got != want {
+		t.Errorf("got %d, want %d", got, want)
+	}
+}
+
+func TestSolvePart2c(t *testing.T) {
+	got := SolvePart2(input5)
 	want := 10
 	if got != want {
 		t.Errorf("got %d, want %d", got, want)

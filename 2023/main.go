@@ -25,15 +25,15 @@ type Solution struct {
 }
 
 var days = map[int]Solution{
-	1: {p1: d01.SolvePart1, p2: d01.SolvePart2},
-	2: {p1: d02.SolvePart1, p2: d02.SolvePart2},
-	3: {p1: d03.SolvePart1, p2: d03.SolvePart2},
-	4: {p1: d04.SolvePart1, p2: d04.SolvePart2},
-	5: {p1: d05.SolvePart1, p2: d05.SolvePart2},
-	6: {p1: d06.SolvePart1, p2: d06.SolvePart2},
-	7: {p1: d07.SolvePart1, p2: d07.SolvePart2},
-	8: {p1: d08.SolvePart1, p2: d08.SolvePart2},
-	9: {p1: d09.SolvePart1, p2: d09.SolvePart2},
+	1:  {p1: d01.SolvePart1, p2: d01.SolvePart2},
+	2:  {p1: d02.SolvePart1, p2: d02.SolvePart2},
+	3:  {p1: d03.SolvePart1, p2: d03.SolvePart2},
+	4:  {p1: d04.SolvePart1, p2: d04.SolvePart2},
+	5:  {p1: d05.SolvePart1, p2: d05.SolvePart2},
+	6:  {p1: d06.SolvePart1, p2: d06.SolvePart2},
+	7:  {p1: d07.SolvePart1, p2: d07.SolvePart2},
+	8:  {p1: d08.SolvePart1, p2: d08.SolvePart2},
+	9:  {p1: d09.SolvePart1, p2: d09.SolvePart2},
 	10: {p1: d10.SolvePart1, p2: d10.SolvePart2},
 	// TODO: insert day here
 }

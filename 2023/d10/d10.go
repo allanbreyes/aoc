@@ -99,7 +99,7 @@ func loop(grid [][]string, start Coord, dir Direction) (coords []Coord, ok bool)
 	return []Coord{}, false
 }
 
-func expand(grid [][]string) (new [][]string) {
+func pad(grid [][]string) (new [][]string) {
 	colsize := len(grid[0])
 	emptyrow := make([]string, colsize)
 	for i := range emptyrow {
@@ -117,18 +117,73 @@ func expand(grid [][]string) (new [][]string) {
 	return new
 }
 
-func SolvePart1(input string) (ans int) {
-	grid, start := parse(input)
+func expand(grid [][]string, coords []Coord) (new [][]int) {
+	x := 3 // Expand to 3x3
+	rowsize := len(grid) * x
+	colsize := len(grid[0]) * x
+	new = make([][]int, rowsize)
+	for ni := range new {
+		new[ni] = make([]int, colsize)
+	}
 
-	for _, dir := range []Direction{N, E, S, W} {
-		coords, ok := loop(grid, start, dir)
-		if ok {
-			return len(coords) / 2
+	for _, coord := range coords {
+		ni := coord.r * x
+		nj := coord.c * x
+		tile := grid[coord.r][coord.c]
+
+		nw, nn, ne := 0, 0, 0
+		ww, ct, ee := 0, 1, 0
+		sw, ss, se := 0, 0, 0
+
+		switch tile {
+		case "|":
+			nn, ss = 1, 1
+		case "-":
+			ww, ee = 1, 1
+		case "L":
+			nn, ee = 1, 1
+		case "J":
+			nn, ww = 1, 1
+		case "7":
+			ww, ss = 1, 1
+		case "F":
+			ee, ss = 1, 1
+		// NOTE: this might cause some issues around the start point
+		case "S":
+			nn, ee, ss, ww = 1, 1, 1, 1
+		}
+
+		new[ni][nj] = nw
+		new[ni][nj+1] = nn
+		new[ni][nj+2] = ne
+		new[ni+1][nj] = ww
+		new[ni+1][nj+1] = ct
+		new[ni+1][nj+2] = ee
+		new[ni+2][nj] = sw
+		new[ni+2][nj+1] = ss
+		new[ni+2][nj+2] = se
+	}
+
+	return new
+}
+
+func contract(fill [][]int) (new [][]int) {
+	x := 3 // Contract from 3x3
+	rowsize := len(fill) / x
+	colsize := len(fill[0]) / x
+	new = make([][]int, rowsize)
+	for ni := range new {
+		new[ni] = make([]int, colsize)
+	}
+
+	for i := 0; i < len(fill); i += x {
+		for j := 0; j < len(fill[0]); j += x {
+			ct := fill[i+1][j+1]
+			new[i/x][j/x] = ct
 		}
 	}
 
-	log.Fatal("no solution found")
-	return
+	return new
 }
 
 func flood(fill [][]int, cursor Coord) {
@@ -145,10 +200,24 @@ func flood(fill [][]int, cursor Coord) {
 	}
 }
 
-func SolvePart2(input string) (ans int) {
-	// Expand grid with padding
+func SolvePart1(input string) (ans int) {
 	grid, start := parse(input)
-	grid = expand(grid)
+
+	for _, dir := range []Direction{N, E, S, W} {
+		coords, ok := loop(grid, start, dir)
+		if ok {
+			return len(coords) / 2
+		}
+	}
+
+	log.Fatal("no solution found")
+	return
+}
+
+func SolvePart2(input string) (ans int) {
+	// Pad grid
+	grid, start := parse(input)
+	grid = pad(grid)
 	start = Coord{start.r + 1, start.c + 1}
 
 	// Find loop
@@ -165,16 +234,13 @@ func SolvePart2(input string) (ans int) {
 	}
 
 	// Initialize fill map
-	fill := make([][]int, len(grid))
-	for i := range fill {
-		fill[i] = make([]int, len(grid[0]))
-	}
-	for _, coord := range coords {
-		fill[coord.r][coord.c] = Pipe
-	}
+	fill := expand(grid, coords)
 
-	// Flood fill and count
+	// Flood fill and contract
 	flood(fill, Coord{0, 0})
+	fill = contract(fill)
+
+	// Count and draw
 	for i, row := range fill {
 		for j, cell := range row {
 			switch cell {
