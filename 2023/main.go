@@ -16,7 +16,21 @@ import (
 	"github.com/allanbreyes/aoc/2023/d08"
 	"github.com/allanbreyes/aoc/2023/d09"
 	"github.com/allanbreyes/aoc/2023/d10"
-	// TODO: insert package here
+	"github.com/allanbreyes/aoc/2023/d11"
+	// "github.com/allanbreyes/aoc/2023/d12"
+	// "github.com/allanbreyes/aoc/2023/d13"
+	// "github.com/allanbreyes/aoc/2023/d14"
+	// "github.com/allanbreyes/aoc/2023/d15"
+	// "github.com/allanbreyes/aoc/2023/d16"
+	// "github.com/allanbreyes/aoc/2023/d17"
+	// "github.com/allanbreyes/aoc/2023/d18"
+	// "github.com/allanbreyes/aoc/2023/d19"
+	// "github.com/allanbreyes/aoc/2023/d20"
+	// "github.com/allanbreyes/aoc/2023/d21"
+	// "github.com/allanbreyes/aoc/2023/d22"
+	// "github.com/allanbreyes/aoc/2023/d23"
+	// "github.com/allanbreyes/aoc/2023/d24"
+	// "github.com/allanbreyes/aoc/2023/d25"
 )
 
 type Solution struct {
@@ -35,7 +49,21 @@ var days = map[int]Solution{
 	8:  {p1: d08.SolvePart1, p2: d08.SolvePart2},
 	9:  {p1: d09.SolvePart1, p2: d09.SolvePart2},
 	10: {p1: d10.SolvePart1, p2: d10.SolvePart2},
-	// TODO: insert day here
+	11: {p1: d11.SolvePart1, p2: d11.SolvePart2},
+	// 12: {p1: d12.SolvePart1, p2: d12.SolvePart2},
+	// 13: {p1: d13.SolvePart1, p2: d13.SolvePart2},
+	// 14: {p1: d14.SolvePart1, p2: d14.SolvePart2},
+	// 15: {p1: d15.SolvePart1, p2: d15.SolvePart2},
+	// 16: {p1: d16.SolvePart1, p2: d16.SolvePart2},
+	// 17: {p1: d17.SolvePart1, p2: d17.SolvePart2},
+	// 18: {p1: d18.SolvePart1, p2: d18.SolvePart2},
+	// 19: {p1: d19.SolvePart1, p2: d19.SolvePart2},
+	// 20: {p1: d20.SolvePart1, p2: d20.SolvePart2},
+	// 21: {p1: d21.SolvePart1, p2: d21.SolvePart2},
+	// 22: {p1: d22.SolvePart1, p2: d22.SolvePart2},
+	// 23: {p1: d23.SolvePart1, p2: d23.SolvePart2},
+	// 24: {p1: d24.SolvePart1, p2: d24.SolvePart2},
+	// 25: {p1: d25.SolvePart1, p2: d25.SolvePart2},
 }
 
 func main() {
