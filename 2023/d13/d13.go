@@ -67,38 +67,28 @@ func findPivot(seq []uint, errors int) (index int, maxlen int) {
 func parse(input string) (patterns []Pattern) {
 	for _, group := range strings.Split(strings.TrimSpace(input), "\n\n") {
 		lines := strings.Split(group, "\n")
-		m, n := len(lines), len(lines[0])
-
-		// Row-wise
-		rows := make([]uint, m)
+		rows := make([]uint, len(lines))
+		cols := make([]uint, len(lines[0]))
 		for i, line := range lines {
-			num := uint(1)
-			for _, char := range line {
-				num <<= 1
+			rows[i] = uint(1)
+			for j, char := range line {
+				rows[i] <<= 1
+				if i == 0 {
+					cols[j] = uint(1)
+				} else {
+					cols[j] <<= 1
+				}
+
 				switch char {
 				case '#':
-					num |= 1
+					rows[i] |= 1
+					cols[j] |= 1
 				case '.':
 				default:
 					log.Fatalf("unexpected char %q", char)
 				}
 			}
-			rows[i] = num
 		}
-
-		// Col-wise
-		cols := make([]uint, n)
-		for j := 0; j < n; j++ {
-			num := uint(1)
-			for i := 0; i < m; i++ {
-				num <<= 1
-				if lines[i][j] == '#' {
-					num |= 1
-				}
-			}
-			cols[j] = num
-		}
-
 		patterns = append(patterns, Pattern{rows, cols})
 	}
 
