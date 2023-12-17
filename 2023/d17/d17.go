@@ -27,15 +27,17 @@ const (
 	E
 	S
 	W
-	U // Upright, unknown, etc.
+	U // Upright
 )
 
 var Moves = map[Direction]Pos{
-	N: {r: -1, c: 0},
-	E: {r: 0, c: 1},
-	S: {r: 1, c: 0},
-	W: {r: 0, c: -1},
+	N: {r: -1, c: 0, h: N},
+	E: {r: 0, c: 1, h: E},
+	S: {r: 1, c: 0, h: S},
+	W: {r: 0, c: -1, h: W},
 }
+
+var ReverseMoves = map[Direction]Direction{N: S, E: W, S: N, W: E}
 
 type Pos struct {
 	// Row and column coordinates
@@ -61,58 +63,31 @@ func pos(r, c int, h Direction, s int) *Pos {
 func (p *Pos) PathNeighbors() (next []astar.Pather) {
 	m, n := len(grid), len(grid[0])
 
-	// Start
-	if p.r == 0 && p.c == 0 && p.h == U {
-		next = append(next, pos(0, 1, E, 1))
-		next = append(next, pos(1, 0, S, 1))
-	}
-
 	// Goal
 	if p.r == m-1 && p.c == n-1 && p.h != U {
 		next = append(next, pos(p.r, p.c, U, 0))
+		return next
 	}
 
-	// North
-	if p.r > 0 && p.h != S {
-		if p.h == N {
-			if p.s < maxs {
-				next = append(next, pos(p.r-1, p.c, N, p.s+1))
-			}
-		} else if p.s >= mins {
-			next = append(next, pos(p.r-1, p.c, N, 1))
+	// Directional moves
+	for dir, move := range Moves {
+		// Skip if move is in opposite direction
+		if move.h == ReverseMoves[p.h] {
+			continue
 		}
-	}
+		r, c, h := p.r+move.r, p.c+move.c, move.h
 
-	// East
-	if p.c < n-1 && p.h != W {
-		if p.h == E {
-			if p.s < maxs {
-				next = append(next, pos(p.r, p.c+1, E, p.s+1))
+		// Check bounds
+		if r >= 0 && r < m && c >= 0 && c < n {
+			if dir == p.h {
+				// Allow streak to continue up until max
+				if p.s < maxs {
+					next = append(next, pos(r, c, h, p.s+1))
+				}
+			} else if p.s >= mins || p.h == U {
+				// Allow change from upright, or if streak is long enough
+				next = append(next, pos(r, c, h, 1))
 			}
-		} else if p.s >= mins {
-			next = append(next, pos(p.r, p.c+1, E, 1))
-		}
-	}
-
-	// South
-	if p.r < m-1 && p.h != N {
-		if p.h == S {
-			if p.s < maxs {
-				next = append(next, pos(p.r+1, p.c, S, p.s+1))
-			}
-		} else if p.s >= mins {
-			next = append(next, pos(p.r+1, p.c, S, 1))
-		}
-	}
-
-	// West
-	if p.c > 0 && p.h != E {
-		if p.h == W {
-			if p.s < maxs {
-				next = append(next, pos(p.r, p.c-1, W, p.s+1))
-			}
-		} else if p.s >= mins {
-			next = append(next, pos(p.r, p.c-1, W, 1))
 		}
 	}
 
