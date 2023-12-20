@@ -44,52 +44,150 @@ type Workflow struct {
 	rules []Rule
 }
 
+type Range struct {
+	min, max int
+}
+
+type Search struct {
+	x, m, a, s Range
+	label      string
+	ruleIndex  int
+}
+
+func (s Search) diffs() (res []int) {
+	res = append(res, s.x.max-s.x.min)
+	res = append(res, s.m.max-s.m.min)
+	res = append(res, s.a.max-s.a.min)
+	res = append(res, s.s.max-s.s.min)
+	return
+}
+
+func (s Search) get(cat string) Range {
+	switch cat {
+	case "x":
+		return s.x
+	case "m":
+		return s.m
+	case "a":
+		return s.a
+	case "s":
+		return s.s
+	}
+	return Range{-1, -1}
+}
+
+func (s Search) set(cat string, min int, max int) Search {
+	rg := Range{min, max}
+	switch cat {
+	case "x":
+		s.x = rg
+	case "m":
+		s.m = rg
+	case "a":
+		s.a = rg
+	case "s":
+		s.s = rg
+	}
+	return s
+}
+
 func SolvePart1(input string) (ans int) {
 	workflows, parts := parse(input)
-
 	accepted := []Part{}
 
 	for _, part := range parts {
-		label := "in"
-		for {
-			if label == "A" {
-				accepted = append(accepted, part)
-				break
-			} else if label == "R" {
-				break
-			}
-
-			workflow := workflows[label]
-			for i, rule := range workflow.rules {
-				if i == len(workflow.rules)-1 {
-					label = rule.dst
-					break
-				}
-				left := part.get(rule.cat)
-				var valid bool
-				switch rule.op {
-				case "<":
-					valid = left < rule.val
-				case ">":
-					valid = left > rule.val
-				}
-
-				if valid {
-					label = rule.dst
-					break
-				}
-			}
+		if run(part, workflows) {
+			accepted = append(accepted, part)
 		}
 	}
 
 	for _, part := range accepted {
 		ans += part.rate()
 	}
+
 	return ans
 }
 
 func SolvePart2(input string) (ans int) {
-	return
+	workflows, _ := parse(input)
+
+	stack := []Search{
+		{x: Range{1, 4000}, m: Range{1, 4000}, a: Range{1, 4000}, s: Range{1, 4000}, label: "in"},
+	}
+	for {
+		if len(stack) == 0 {
+			break
+		}
+		search := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+
+		if search.label == "A" {
+			acc := 1
+			for _, diff := range search.diffs() {
+				acc *= diff + 1
+			}
+			ans += acc
+			continue
+		} else if search.label == "R" {
+			continue
+		}
+
+		rule := workflows[search.label].rules[search.ruleIndex]
+		acc, rej := search, search
+		acc.label = rule.dst
+		acc.ruleIndex = 0
+		rej.label = search.label
+		rej.ruleIndex++
+
+		if rule.op == ">" {
+			acc = acc.set(rule.cat, rule.val+1, acc.get(rule.cat).max)
+			rej = rej.set(rule.cat, rej.get(rule.cat).min, rule.val)
+		} else if rule.op == "<" {
+			acc = acc.set(rule.cat, acc.get(rule.cat).min, rule.val-1)
+			rej = rej.set(rule.cat, rule.val, rej.get(rule.cat).max)
+		}
+		stack = append(stack, acc)
+		if !rule.coda {
+			stack = append(stack, rej)
+		}
+	}
+
+	return ans
+}
+
+func run(part Part, workflows map[string]Workflow) (accepted bool) {
+	label := "in"
+	for {
+		if label == "A" {
+			return true
+		} else if label == "R" {
+			return false
+		}
+
+		workflow := workflows[label]
+		for _, rule := range workflow.rules {
+			if rule.coda {
+				label = rule.dst
+				break
+			}
+
+			left := part.get(rule.cat)
+			var valid bool
+			switch rule.op {
+			case "<":
+				valid = left < rule.val
+			case ">":
+				valid = left > rule.val
+			default:
+				log.Fatalf("unknown op: %s", rule.op)
+			}
+
+			if valid {
+				label = rule.dst
+				break
+			}
+		}
+	}
 }
 
 func parse(input string) (workflows map[string]Workflow, parts []Part) {

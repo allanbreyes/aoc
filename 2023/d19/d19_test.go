@@ -32,7 +32,7 @@ func TestSolvePart1(t *testing.T) {
 
 func TestSolvePart2(t *testing.T) {
 	got := SolvePart2(input)
-	want := 0
+	want := 167409079868000
 	if got != want {
 		t.Errorf("got %d, want %d", got, want)
 	}
