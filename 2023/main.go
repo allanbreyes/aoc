@@ -29,7 +29,7 @@ import (
 	"github.com/allanbreyes/aoc/2023/d21"
 	"github.com/allanbreyes/aoc/2023/d22"
 	"github.com/allanbreyes/aoc/2023/d23"
-	// "github.com/allanbreyes/aoc/2023/d24"
+	"github.com/allanbreyes/aoc/2023/d24"
 	// "github.com/allanbreyes/aoc/2023/d25"
 )
 
@@ -62,7 +62,7 @@ var days = map[int]Solution{
 	21: {p1: d21.SolvePart1, p2: d21.SolvePart2},
 	22: {p1: d22.SolvePart1, p2: d22.SolvePart2},
 	23: {p1: d23.SolvePart1, p2: d23.SolvePart2},
-	// 24: {p1: d24.SolvePart1, p2: d24.SolvePart2},
+	24: {p1: d24.SolvePart1, p2: d24.SolvePart2},
 	// 25: {p1: d25.SolvePart1, p2: d25.SolvePart2},
 }
 
