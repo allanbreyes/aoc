@@ -27,6 +27,10 @@ in pkgs.mkShell {
     clippy
     rust-analyzer
     rustfmt
+
+    # TypeScript
+    nodejs
+    typescript
   ];
   postEnvCreation = ''
     pip install -r requirements.txt
