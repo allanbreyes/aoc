@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "day": "day() { npx ts-node \"src/d${1:-00}.ts\"; }; day",
+    "new": "new() { touch \"inputs/${1:-00}.txt\" && sed \"s/00/${1:-00}/\" src/d00.ts > \"src/d${1:00}.ts\" && sed \"s/00/${1:-00}/\" src/d00.test.ts > \"src/d${1:00}.test.ts\"; }; new",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
