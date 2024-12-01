@@ -1,0 +1,29 @@
+# frozen_string_literal: true
+
+require 'rake/testtask'
+require 'rubocop/rake_task'
+
+Rake::TestTask.new do |t|
+  t.pattern = '*_test.rb'
+end
+
+RuboCop::RakeTask.new do |t|
+  t.requires << 'rubocop-minitest'
+  t.requires << 'rubocop-rake'
+end
+
+task default: %w[test rubocop:autocorrect]
+
+desc "Run a specific day's solution"
+task :day, [:day] do |_t, args|
+  day = if args[:day].nil?
+          Dir['d*.rb'].map { |x| x[1..2] }.max
+        else
+          Integer(args[:day]).to_s.rjust(2, '0')
+        end
+
+  require_relative "d#{day}"
+  solver = Object.const_get('Solver').new(File.read("inputs/#{day}.txt"))
+  puts "Day #{day}, Part 1: #{solver.part1}"
+  puts "Day #{day}, Part 2: #{solver.part2}"
+end

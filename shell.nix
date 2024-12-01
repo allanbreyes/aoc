@@ -20,6 +20,9 @@ in pkgs.mkShell {
     py.python
     py.venvShellHook
 
+    # Ruby
+    ruby
+
     # Rust
     clippy
     rust-analyzer
