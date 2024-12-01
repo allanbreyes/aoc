@@ -2,7 +2,7 @@
 
 require 'set'
 
-class Solver
+class D01
   @directions = [
     [0, -1], # North
     [1, 0],  # East
