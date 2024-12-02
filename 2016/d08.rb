@@ -42,7 +42,6 @@ class D08
     @screen = transposed.transpose
   end
 
-  # rubocop:disable Metrics/MethodLength
   def parse
     @input.strip.split("\n").map do |line|
       case line

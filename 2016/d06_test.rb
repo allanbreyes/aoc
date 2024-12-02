@@ -4,7 +4,6 @@ require 'minitest/autorun'
 require_relative 'd06'
 
 class TestD06 < Minitest::Test
-  # rubocop:disable Metrics/MethodLength
   def setup
     @example = <<~EXAMPLE
       eedadn

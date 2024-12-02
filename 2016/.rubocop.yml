@@ -4,6 +4,12 @@ AllCops:
 Lint/MissingCopEnableDirective:
   Enabled: false
 
+Metrics/AbcSize:
+  Max: 25
+
+Metrics/MethodLength:
+  Max: 20
+
 Naming/MethodParameterName:
   Enabled: false
 
