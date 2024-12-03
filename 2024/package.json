@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "day": "day() { npx ts-node \"src/d${1:-00}.ts\"; }; day",
+    "fmt": "prettier --write src/*.ts",
     "new": "new() { touch \"inputs/${1:-00}.txt\" && sed \"s/00/${1:-00}/\" src/d00.ts > \"src/d${1:00}.ts\" && sed \"s/00/${1:-00}/\" src/d00.test.ts > \"src/d${1:00}.test.ts\"; }; new",
     "test": "jest"
   },
@@ -14,6 +15,7 @@
   "devDependencies": {
     "@types/jest": "^29.5.14",
     "jest": "^29.7.0",
+    "prettier": "^3.4.1",
     "ts-jest": "^29.2.5",
     "typescript": "^5.7.2"
   }

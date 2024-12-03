@@ -1,4 +1,4 @@
-import { Solver } from './d01';
+import { Solver } from "./d01";
 
 const example = `3   4
 4   3

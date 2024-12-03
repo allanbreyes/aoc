@@ -18,10 +18,13 @@ export class Solver {
   part2() {
     const [left, right] = this.parse();
 
-    const counter = right.reduce((acc, val) => {
-      acc[val] = (acc[val] || 0) + 1;
-      return acc;
-    }, {} as Record<number, number>);
+    const counter = right.reduce(
+      (acc, val) => {
+        acc[val] = (acc[val] || 0) + 1;
+        return acc;
+      },
+      {} as Record<number, number>,
+    );
 
     return left.reduce((acc, val) => {
       if (counter[val] > 0) {
@@ -32,12 +35,15 @@ export class Solver {
   }
 
   private parse() {
-    const rows = this.input.trim().split("\n").map((line) => {
-      const [a, b] = line.split("   ");
-      return [parseInt(a, 10), parseInt(b, 10)];
-    });
-    const left = rows.map(row => row[0]);
-    const right = rows.map(row => row[1]);
+    const rows = this.input
+      .trim()
+      .split("\n")
+      .map((line) => {
+        const [a, b] = line.split("   ");
+        return [parseInt(a, 10), parseInt(b, 10)];
+      });
+    const left = rows.map((row) => row[0]);
+    const right = rows.map((row) => row[1]);
     return [left, right];
   }
 }

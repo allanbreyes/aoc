@@ -8,7 +8,7 @@ export class Solver {
   }
 
   part2() {
-    return this.parse().filter(level => {
+    return this.parse().filter((level) => {
       if (Solver.isSafe(level)) {
         return true;
       }
@@ -47,7 +47,10 @@ export class Solver {
   }
 
   private parse() {
-    return this.input.trim().split("\n").map(line => line.split(" ").map(Number));
+    return this.input
+      .trim()
+      .split("\n")
+      .map((line) => line.split(" ").map(Number));
   }
 }
 
