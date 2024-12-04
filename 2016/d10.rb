@@ -57,7 +57,7 @@ class D10
 
   # NOTE: this is pretty gross! I'm sure there's a more idiomatic way, but I'm
   # short on time and motivation.
-  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def parse
     bins = {}
     rules = {}

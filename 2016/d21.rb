@@ -85,7 +85,6 @@ class D21
     s.insert(y, s.slice!(x))
   end
 
-  # rubocop:disable Metrics/CyclomaticComplexity
   def parse
     @input.strip.split("\n").map do |line|
       case line

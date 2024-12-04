@@ -44,7 +44,6 @@ class D17
     end
   end
 
-  # rubocop:disable Metrics/CyclomaticComplexity
   def neighbors(pos, path)
     x, y = pos
     moves = openings(path).map do |dir|
