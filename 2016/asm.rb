@@ -31,6 +31,12 @@ class Assembunny
 
         send(op, x, y)
 
+      when :out
+        x, *rest = args
+        raise "Invalid arguments: #{rest}" unless !x.nil? && rest.empty?
+
+        yield get(x) if block_given?
+
       when :muladd
         x, y, z, *rest = args
         raise "Invalid arguments: #{rest}" unless !x.nil? && !y.nil? && !z.nil? && rest.empty?
@@ -117,7 +123,7 @@ class Assembunny
     op, *args = @program[target]
     @program[target] = case op
                        when :inc then [:dec, *args]
-                       when :dec, :tgl then [:inc, *args]
+                       when :dec, :tgl, :out then [:inc, *args]
                        when :jnz then [:cpy, *args]
                        when :cpy then [:jnz, *args]
                        end
