@@ -4,11 +4,11 @@ export class Solver {
   constructor(private input: string) {}
 
   part1() {
-    return this.parse().length;
+    return 0;
   }
 
   part2() {
-    return this.parse().length;
+    return 0;
   }
 
   private parse() {
