@@ -25,7 +25,7 @@ export class Solver {
     const antinodes = new Set<string>();
 
     nodes.forEach((locations) => {
-      this.countAntinodes(locations, grid, once).forEach((key) => {
+      this.findAntinodes(locations, grid, once).forEach((key) => {
         antinodes.add(key);
       });
     });
@@ -33,15 +33,17 @@ export class Solver {
     return antinodes.size;
   }
 
-  countAntinodes(locations: number[][], grid: string[][], once = true) {
+  findAntinodes(locations: number[][], grid: string[][], once = true) {
     const antinodes = new Set<string>();
 
     locations.forEach(([i, j], k) => {
       locations.slice(k + 1).forEach(([m, n]) => {
         const [di, dj] = [m - i, n - j];
 
-        antinodes.add(this.key([i, j]));
-        antinodes.add(this.key([m, n]));
+        if (!once) {
+          antinodes.add(this.key([i, j]));
+          antinodes.add(this.key([m, n]));
+        }
 
         this.project([i, j], [-di, -dj], grid, once).forEach((point) => {
           antinodes.add(point);

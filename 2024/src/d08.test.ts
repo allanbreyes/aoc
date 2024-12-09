@@ -14,13 +14,13 @@ const example = `............
 ............`;
 
 describe("d08 Solver", () => {
-  const solver = new Solver(example);
-
-  // it("should solve part 1 examples", () => {
-  //   expect(solver.part1()).toBe(14);
-  // });
+  it("should solve part 1 examples", () => {
+    const solver = new Solver(example);
+    expect(solver.part1()).toBe(14);
+  });
 
   it("should solve part 2 examples", () => {
+    const solver = new Solver(example);
     expect(solver.part2()).toBe(34);
   });
 });
