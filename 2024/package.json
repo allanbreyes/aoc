@@ -7,6 +7,7 @@
     "day": "day() { npx ts-node \"src/d${1:-00}.ts\"; }; day",
     "fmt": "prettier --write src/*.ts",
     "new": "new() { touch \"inputs/${1:-00}.txt\" && sed \"s/00/${1:-00}/\" src/d00.ts > \"src/d${1:00}.ts\" && sed \"s/00/${1:-00}/\" src/d00.test.ts > \"src/d${1:00}.test.ts\"; }; new",
+    "pull": "pull() { curl -s \"https://adventofcode.com/2024/day/${1:-0}/input\" -H \"Cookie: session=$(kv get aoc)\" | tee \"inputs/${1:-00}.txt\"; }; pull",
     "test": "jest"
   },
   "keywords": [],
