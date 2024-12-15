@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 
 export class Solver {
-  constructor(private input: string) {}
+  constructor(private readonly input: string) {}
 
   part1() {
     return 0;
