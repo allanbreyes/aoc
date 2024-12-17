@@ -1,21 +1,46 @@
 import { readFileSync } from "fs";
 
-type Registers = Map<string, number>;
+// NOTE: this wracked my brain! Part 1 was easy, but I discovered the hard way
+// after finding negative registers that two's complement was being used during
+// XOR operations, resulting in the need to sprinkle BigInts everywhere.
+type Registers = Map<string, bigint>;
 
 export class Solver {
   program: number[] = [];
-  registers: Map<string, number> = new Map();
+  registers: Map<string, bigint> = new Map();
   ip: number = 0;
 
   constructor(private readonly input: string) {}
 
   part1() {
     this.init();
-    return this.runAll().join(",");
+    return this.run().join(",");
   }
 
   part2() {
-    return 0;
+    this.init();
+    let i = 0;
+    let j = 1;
+    while (i < 2 ** 64 && j <= this.program.length) {
+      this.init();
+      this.registers.set("A", BigInt(i));
+
+      const out = this.run();
+
+      if (this.equals(out, this.program)) {
+        return i;
+      } else if (this.equals(out, this.program, j)) {
+        // After observing some patterns, I realized that we could skip ahead.
+        // I think this likely has to do with the modulo 8 operations.
+        this.debug(`a: ${i}, k: ${j}, out: ${out.join(",")}`);
+        i *= 8;
+        j++;
+        continue;
+      } else {
+        i++;
+      }
+    }
+    return -1;
   }
 
   clear() {
@@ -24,18 +49,37 @@ export class Solver {
     this.ip = 0;
   }
 
-  init() {
+  private init() {
     const [registers, program] = this.parse();
     this.registers = registers;
     this.program = program;
     this.ip = 0;
   }
 
-  *run() {
+  private debug(msg: string) {
+    if (process.env.DEBUG) {
+      console.log(msg);
+    }
+  }
+
+  private equals(
+    a: number[],
+    b: number[],
+    last: number | null = null,
+  ): boolean {
+    if (last !== null) {
+      a = a.slice(a.length - last);
+      b = b.slice(b.length - last);
+    }
+    return a.length === b.length && a.every((v, i) => v === b[i]);
+  }
+
+  run() {
+    let i = 0;
+    const out = [];
     while (this.ip < this.program.length) {
       const opcode = this.program[this.ip];
       const operand = this.program[this.ip + 1];
-      // console.log({ ip: this.ip, opcode, operand, reg: this.registers });
       let jumped = false;
       switch (opcode) {
         case 0:
@@ -55,7 +99,7 @@ export class Solver {
           this.bxc4(operand);
           break;
         case 5:
-          yield this.out5(operand);
+          out.push(this.out5(operand));
           break;
         case 6:
           this.bdv6(operand);
@@ -69,14 +113,13 @@ export class Solver {
       if (!jumped) {
         this.ip += 2;
       }
+      i++;
     }
+
+    return out.map(Number);
   }
 
-  runAll() {
-    return Array.from(this.run());
-  }
-
-  combo(operand: number) {
+  private combo(operand: number): bigint {
     /**
      * Combo operands 0 through 3 represent literal values 0 through 3.
      * Combo operand 4 represents the value of register A.
@@ -89,7 +132,7 @@ export class Solver {
       case 1:
       case 2:
       case 3:
-        return operand;
+        return BigInt(operand);
       case 4:
         return this.registers.get("A")!;
       case 5:
@@ -112,7 +155,7 @@ export class Solver {
      * of the division operation is truncated to an integer and then written to
      * the A register.
      */
-    const value = Math.floor(this.registers.get("A")! / 2 ** this.combo(combo));
+    const value = this.registers.get("A")! / BigInt(2) ** this.combo(combo);
     this.registers.set("A", value);
     return value;
   }
@@ -123,7 +166,7 @@ export class Solver {
      * and the instruction's literal operand, then stores the result in register
      * B.
      */
-    const value = this.registers.get("B")! ^ operand;
+    const value = this.registers.get("B")! ^ BigInt(operand);
     this.registers.set("B", value);
     return value;
   }
@@ -134,7 +177,7 @@ export class Solver {
      * modulo 8 (thereby keeping only its lowest 3 bits), then writes that value
      * to the B register.
      */
-    const value = this.combo(combo) % 8;
+    const value = this.combo(combo) % BigInt(8);
     this.registers.set("B", value);
     return value;
   }
@@ -147,7 +190,7 @@ export class Solver {
      * instruction jumps, the instruction pointer is not increased by 2 after
      * this instruction.
      */
-    if (this.registers.get("A") !== 0) {
+    if (this.registers.get("A") !== BigInt(0)) {
       return operand - this.ip;
     }
     return 2;
@@ -170,7 +213,7 @@ export class Solver {
      * modulo 8, then outputs that value. (If a program outputs multiple values,
      * they are separated by commas.)
      */
-    const value = this.combo(combo) % 8;
+    const value = this.combo(combo) % BigInt(8);
     return value;
   }
 
@@ -180,7 +223,7 @@ export class Solver {
      * except that the result is stored in the B register. (The numerator is
      * still read from the A register.)
      */
-    const value = Math.floor(this.registers.get("A")! / 2 ** this.combo(combo));
+    const value = this.registers.get("A")! / BigInt(2) ** this.combo(combo);
     this.registers.set("B", value);
     return value;
   }
@@ -191,7 +234,7 @@ export class Solver {
      * except that the result is stored in the C register. (The numerator is
      * still read from the A register.)
      */
-    const value = Math.floor(this.registers.get("A")! / 2 ** this.combo(combo));
+    const value = this.registers.get("A")! / BigInt(2) ** this.combo(combo);
     this.registers.set("C", value);
     return value;
   }
@@ -204,9 +247,9 @@ export class Solver {
         if (i === 0) {
           return stanza.split("\n").reduce((acc, line) => {
             const [_, reg, n] = line.match(/Register (\w+): (\d+)/)!;
-            acc.set(reg, parseInt(n, 10));
+            acc.set(reg, BigInt(n));
             return acc;
-          }, new Map<string, number>());
+          }, new Map<string, BigInt>());
         } else if (i === 1) {
           const matches = stanza.matchAll(/(\d+)/g);
           return Array.from(matches).map(([, n]) => parseInt(n, 10));
