@@ -31,6 +31,9 @@ in pkgs.mkShell {
     # TypeScript
     nodejs
     typescript
+
+    # Zig
+    zig
   ];
   postEnvCreation = ''
     pip install -r requirements.txt
