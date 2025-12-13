@@ -2,6 +2,7 @@
 *.pdb
 *.pyc
 .direnv/
+_build/
 __pycache__/
 debug/
 inputs/

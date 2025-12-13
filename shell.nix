@@ -15,6 +15,18 @@ in pkgs.mkShell {
     # Golang
     go
 
+    # OCaml
+    ocamlPackages.ocaml
+    ocamlPackages.containers
+    ocamlPackages.dune_3
+    ocamlPackages.findlib
+    ocamlPackages.janeStreet.ppx_expect
+    ocamlPackages.ocaml-lsp
+    ocamlPackages.odoc
+    ocamlPackages.utop
+    ocamlPackages.zarith
+    ocamlformat
+
     # Python
     py.numpy
     py.python
