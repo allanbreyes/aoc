@@ -1,0 +1,11 @@
+(lang dune 3.20)
+(name aoc)
+(generate_opam_files true)
+(source
+ (github allanbreyes/aoc))
+(authors "Allan Reyes <allanbreyes@users.noreply.github.com>")
+(package
+ (name aoc)
+ (synopsis "Advent of Code 2017")
+ (description "Advent of Code 2017")
+ (depends ocaml containers ppx_expect))

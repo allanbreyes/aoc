@@ -1,0 +1,6 @@
+(library
+ (name aoc)
+ (inline_tests)
+ (libraries containers str unix)
+ (preprocess
+  (pps ppx_expect)))
