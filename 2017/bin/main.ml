@@ -19,8 +19,8 @@ let () =
     | "07" -> (module Day07)
     | "08" -> (module Day08)
     | "09" -> (module Day09)
-    (*
     | "10" -> (module Day10)
+    (*
     | "11" -> (module Day11)
     | "12" -> (module Day12)
     | "13" -> (module Day13)
