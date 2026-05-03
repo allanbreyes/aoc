@@ -12,6 +12,9 @@ in pkgs.mkShell {
     rustc
   ];
   buildInputs = with pkgs; [
+    # Clojure
+    clojure
+
     # Golang
     go
 
