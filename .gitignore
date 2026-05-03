@@ -1,9 +1,11 @@
 **/*.rs.bk
 *.pdb
 *.pyc
+.clj-kondo/
 .direnv/
-_build/
+.lsp/
 __pycache__/
+_build/
 debug/
 inputs/
 node_modules/
