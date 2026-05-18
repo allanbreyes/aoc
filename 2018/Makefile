@@ -6,6 +6,9 @@ run:
 test:
 	clojure -M:test
 
+fmt:
+	clojure -M:fmt
+
 new:
 	@cp src/aoc2018/d00.clj src/aoc2018/d$(DAY).clj
 	@sed -i 's/d00/d$(DAY)/g' src/aoc2018/d$(DAY).clj
@@ -20,4 +23,4 @@ pull:
 	  -H "Cookie: session=$$(kv get aoc)" \
 	  | tee inputs/$(DAY).txt
 
-.PHONY: run test new pull
+.PHONY: run test fmt new pull
